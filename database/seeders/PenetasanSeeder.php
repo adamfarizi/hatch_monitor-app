@@ -18,8 +18,8 @@ class PenetasanSeeder extends Seeder
         // Buat data untuk tabel Penetasan
         $penetasan = Penetasan::create([
             'id_peternak' => 1,
-            'tanggal_mulai' => now(),
-            'tanggal_selesai' => now()->addDays(23), // Tanggal selesai adalah 23 hari setelah tanggal mulai
+            'tanggal_mulai' => now()->subDays(22),
+            'tanggal_selesai' => now(), // Tanggal selesai adalah 23 hari setelah tanggal mulai
             'jumlah_telur' => 100,
             'prediksi_menetas' => 80,
             'total_menetas' => 0,
@@ -30,7 +30,7 @@ class PenetasanSeeder extends Seeder
         // Buat data untuk tabel Harian
         $start_date = $penetasan->tanggal_mulai;
         $end_date = now();
-        
+
         // Perulangan dari tanggal mulai hingga tanggal selesai
         while ($start_date <= $end_date) {
             // Buat entri untuk masing-masing waktu harian
@@ -49,5 +49,17 @@ class PenetasanSeeder extends Seeder
             // Tambahkan 1 hari
             $start_date->addDay();
         }
+
+        // Perbarui total_menetas, rata_rata_suhu, dan rata_rata_kelembaban pada Penetasan
+        $total_menetas = Harian::where('id_penetasan', $penetasan->id_penetasan)->sum('menetas');
+        $rata_rata_suhu = Harian::where('id_penetasan', $penetasan->id_penetasan)->avg('suhu_harian');
+        $rata_rata_kelembaban = Harian::where('id_penetasan', $penetasan->id_penetasan)->avg('kelembaban_harian');
+
+        $penetasan->update([
+            'total_menetas' => $total_menetas,
+            'rata_rata_suhu' => $rata_rata_suhu,
+            'rata_rata_kelembaban' => $rata_rata_kelembaban,
+        ]);
     }
+
 }

@@ -30,6 +30,34 @@ class PenetasanController extends Controller
             'penetasans' => $penetasans,
         ], $data);
     }
+
+    public function grafik(Request $request)
+    {
+        // Menghitung tanggal satu minggu yang lalu
+        $tanggalSatuMingguYangLalu = Carbon::now()->subMonths(3)->format('Y-m-d H:i:s');
+
+        // Mengambil data monitor dalam rentang waktu satu minggu terakhir
+        $data = Penetasan::where('tanggal_mulai', '>', $tanggalSatuMingguYangLalu)
+            ->orderBy('tanggal_mulai')
+            ->get();
+
+        $jumlahTelur = [];
+        $menetas = [];
+        $categories = [];
+
+        foreach ($data as $monitor) {
+            $categories[] = Carbon::parse($monitor->tanggal_mulai)->format('m-d');
+            $jumlahTelur[] = $monitor->jumlah_telur;
+            $menetas[] = $monitor->total_menetas;
+        }
+
+        return response()->json([
+            'categories' => $categories,
+            'jumlahTelur' => $jumlahTelur,
+            'menetas' => $menetas,
+        ]);
+    }
+
     public function create(Request $request)
     {
         try {

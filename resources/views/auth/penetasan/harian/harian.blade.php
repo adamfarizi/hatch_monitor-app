@@ -37,7 +37,9 @@
                 <h5 class="card-title row">
                     <div class="col">Data Kondisi Harian Telur</div>
                     <div class="col text-end">
-                        <a type="button" class="btn btn-primary" href="{{ url('/penetasan/'. $penetasan->id_penetasan . '/harian/create') }}"><i class="bi bi-plus-lg me-1"></i> Tambah
+                        <a type="button" class="btn btn-primary"
+                            href="{{ url('/penetasan/' . $penetasan->id_penetasan . '/harian/create') }}"><i
+                                class="bi bi-plus-lg me-1"></i> Tambah
                             Penetasan</a>
                     </div>
                 </h5>
@@ -106,9 +108,12 @@
                                             <a class="icon" href="#" data-bs-toggle="dropdown"><i
                                                     class="bi bi-three-dots"></i></a>
                                             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                                <li><a class="dropdown-item" href="{{ url('/penetasan/' . $penetasan->id_penetasan . '/harian/' . $harian->id_harian . '/edit') }}"><i
+                                                <li><a class="dropdown-item"
+                                                        href="{{ url('/penetasan/' . $penetasan->id_penetasan . '/harian/' . $harian->id_harian . '/edit') }}"><i
                                                             class="bi bi-pencil-square"></i></span>Edit</a></li>
-                                                <li><a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#deleteData{{ $harian->id_harian }}"><i
+                                                <li><a class="dropdown-item text-danger" href="#"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#deleteData{{ $harian->id_harian }}"><i
                                                             class="bi bi-trash"></i></span>Delete</a></li>
                                             </ul>
                                         </div>
@@ -188,7 +193,9 @@
     @foreach ($harians as $harian)
         <div class="modal fade" id="deleteData{{ $harian->id_harian }}" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
-                <form action="{{ url('/penetasan/' . $penetasan->id_penetasan . '/harian/' . $harian->id_harian . '/delete') }}" method="POST">
+                <form
+                    action="{{ url('/penetasan/' . $penetasan->id_penetasan . '/harian/' . $harian->id_harian . '/delete') }}"
+                    method="POST">
                     @csrf
                     @method('DELETE')
                     <div class="modal-content">
@@ -208,4 +215,6 @@
             </div>
         </div>
     @endforeach
+@endsection
+@section('js')
 @endsection

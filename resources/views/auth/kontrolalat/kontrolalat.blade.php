@@ -32,9 +32,9 @@
                                 <i class="bi bi-thermometer-half"></i>
                             </div>
                             <div class="ps-3">
-                                <h6>38 °C</h6>
+                                <h6>{{ $suhu }} °C</h6>
                                 <span class="text-muted small pt-1">sebelumnya </span> <span
-                                    class="text-primary small pt-2 ps-1 fw-bold">41 °C</span>
+                                    class="text-primary small pt-2 ps-1 fw-bold">{{ $suhuSebelumnya }} °C</span>
                             </div>
                         </div>
                     </div>
@@ -60,9 +60,9 @@
                                 <i class="bi bi-droplet-half"></i>
                             </div>
                             <div class="ps-3">
-                                <h6>50 %</h6>
+                                <h6>{{ $kelembaban }} %</h6>
                                 <span class="text-muted small pt-1">sebelumnya </span> <span
-                                    class="text-success small pt-2 ps-1 fw-bold">50 %</span>
+                                    class="text-success small pt-2 ps-1 fw-bold">{{ $kelembabanSebelumnya }} %</span>
                             </div>
                         </div>
                     </div>
@@ -102,7 +102,7 @@
                     <div class="card-body">
                         <h5 class="card-title row">
                             <div class="col">
-                                Live Preview Alat
+                                Live Preview Alatx
                             </div>
                             <div class="col text-end">
                                 <span>
@@ -111,11 +111,13 @@
                             </div>
                         </h5>
                         <div class="container mb-1" style="height: 50vh">
-                            <div class="bg-dark h-100 text-center text-white" style="  border-radius: 25px;">
-                                <p style="padding-top: 23vh">
-                                    <i class="bi bi-exclamation-circle-fill"></i>
-                                    <span>Kamera tidak tersambung !</span>
-                                </p>
+                            <div class="bg-dark h-100 text-center text-white live-preview-container"
+                                style="border-radius: 25px;">
+                                <img id="livePreviewImage" src="{{ $link }}" width="100%" height="100%"
+                                    scrolling="no" style="border: none; border-radius: 25px; object-fit: cover;">
+                                <p id="connectionStatus" class="pt-5"
+                                    style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                                    <span><i class="ri-information-line"></i></span>Kamera tidak tersambung</p>
                             </div>
                         </div>
                     </div>
@@ -199,6 +201,41 @@
     </section>
 @endsection
 @section('js')
+    <script>
+        // Fungsi untuk memeriksa apakah gambar di URL tertentu dapat diakses
+        function checkImage(url, callback) {
+            var img = new Image();
+            img.onload = function() {
+                callback(true);
+            };
+            img.onerror = function() {
+                callback(false);
+            };
+            img.src = url;
+        }
+
+        var link = '{{ $link }}';
+
+        // Periksa apakah gambar di URL dapat diakses
+        checkImage(link, function(isAccessible) {
+            var livePreviewContainer = document.querySelector('.live-preview-container');
+            var livePreviewImage = document.getElementById('livePreviewImage');
+            var connectionStatus = document.getElementById('connectionStatus');
+
+            if (isAccessible) {
+                // Jika gambar diakses, tampilkan gambar
+                livePreviewContainer.style.background = 'none'; // Hapus latar belakang hitam
+                livePreviewImage.style.display = 'block'; // Tampilkan gambar
+                connectionStatus.style.display = 'none'; // Sembunyikan pesan kamera tidak tersambung
+            } else {
+                // Jika gambar tidak dapat diakses, tampilkan latar belakang hitam dan pesan kamera tidak tersambung
+                livePreviewContainer.style.background = '#000'; // Latar belakang hitam
+                livePreviewImage.style.display = 'none'; // Sembunyikan gambar
+                connectionStatus.style.display = 'block'; // Tampilkan pesan kamera tidak tersambung
+            }
+        });
+    </script>
+
     {{-- Grafik --}}
     <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -227,13 +264,24 @@
                         height: 350,
                         type: 'area',
                         toolbar: {
-                            show: false
+                            show: true,
+                            offsetX: 0,
+                            offsetY: 0,
+                            tools: {
+                                download: true,
+                                selection: false,
+                                zoom: false,
+                                zoomin: false,
+                                zoomout: false,
+                                pan: false,
+                                reset: false | '<img src="/static/icons/reset.png" width="20">',
+                                customIcons: []
+                            },
                         },
                     },
                     markers: {
                         size: 4
                     },
-                    colors: ['#4154f1', '#2eca6a'],
                     fill: {
                         type: "gradient",
                         gradient: {

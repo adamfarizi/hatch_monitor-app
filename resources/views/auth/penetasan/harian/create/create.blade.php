@@ -43,7 +43,7 @@
                                 class="text-danger">*</span></label>
                         <div class="col-sm-10">
                             <input type="datetime-local" class="form-control" id="waktu_harian" name="waktu_harian"
-                                required>
+                                value="{{ now() }}" required>
                         </div>
                     </div>
                     <div class="row mb-3">

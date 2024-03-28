@@ -28,8 +28,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);
 
     Route::get('/beranda', [BerandaController::class, 'index'])->name('beranda');
+    Route::get('/beranda/grafik_penetasan', [PenetasanController::class, 'grafik'])->name('beranda.penetasan.grafik');
+    Route::get('/beranda/grafik_suhu', [KontrolAlatController::class, 'grafik'])->name('beranda.suhu.grafik');
 
     Route::get('/penetasan', [PenetasanController::class, 'index'])->name('penetasan');
+    Route::get('/penetasan/grafik', [PenetasanController::class, 'grafik'])->name('penetasan.grafik');
     Route::post('/penetasan/create', [PenetasanController::class, 'create']);
     Route::put('/penetasan/{id_penetasan}/edit', [PenetasanController::class, 'edit']);
     Route::delete('/penetasan/{id_penetasan}/delete', [PenetasanController::class, 'delete']);
@@ -42,7 +45,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/kontrolalat', [KontrolAlatController::class, 'index'])->name('kontrolalat');
     Route::get('/kontrolalat/grafik', [KontrolAlatController::class, 'grafik'])->name('kontrolalat.grafik');
-
+    Route::get('/kontrolalat/saveMonitor', [KontrolAlatController::class, 'getData_ThingSpeak']);
+    
     Route::get('/profil/{id_peternak}', [ProfilController::class, 'index'])->name('profil');
     Route::put('/profil/{id_peternak}/edit', [ProfilController::class, 'edit']);
     Route::post('/profil/password', [ProfilController::class, 'changePassword']);

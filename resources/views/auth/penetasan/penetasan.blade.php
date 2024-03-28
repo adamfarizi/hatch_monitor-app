@@ -12,12 +12,24 @@
 @endsection
 @section('content')
     <section class="section">
+        {{-- Grafik --}}
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Grafik Penetasan</h5>
+                        <div id="grafikPenetasan"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
         {{-- Notifikasi --}}
         @if (session('success'))
             <div class="alert alert-success bg-success text-light border-0 alert-dismissible fade show" role="alert">
                 <i class="bi bi-check-circle me-1"></i>
                 <b>Sukses ! </b> {{ session('success') }}
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"
+                    aria-label="Close"></button>
             </div>
         @endif
         @if ($errors->any())
@@ -253,6 +265,79 @@
     @endforeach
 @endsection
 @section('js')
+    {{-- Grafik --}}
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Mendapatkan data dari endpoint menggunakan Ajax
+            fetch('{{ route('penetasan.grafik') }}')
+                .then(response => response.json())
+                .then(data => {
+                    // Memanggil fungsi untuk menggambar grafik dengan data yang diperoleh
+                    drawChart(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+            // Fungsi untuk menggambar grafik dengan data yang diperoleh
+            function drawChart(data) {
+                var options = {
+                    series: [{
+                        name: 'Jumlah Telur',
+                        type: 'column',
+                        data: data.jumlahTelur
+                    }, {
+                        name: 'Menetas',
+                        type: 'line',
+                        data: data.menetas
+                    }],
+                    chart: {
+                        height: 350,
+                        type: 'line',
+                        toolbar: {
+                            show: true,
+                            offsetX: 0,
+                            offsetY: 0,
+                            tools: {
+                                download: true,
+                                selection: false,
+                                zoom: false,
+                                zoomin: false,
+                                zoomout: false,
+                                pan: false,
+                                reset: false | '<img src="/static/icons/reset.png" width="20">',
+                                customIcons: []
+                            },
+                        },
+                    },
+                    markers: {
+                        size: 4
+                    },
+                    stroke: {
+                        curve: 'smooth',
+                        width: [0, 4]
+                    },
+                    plotOptions: {
+                        bar: {
+                            columnWidth: '10%',
+                            borderRadius: 5
+                        }
+                    },
+                    dataLabels: {
+                        enabled: false,
+                    },
+                    xaxis: {
+                        type: 'datetime',
+                        categories: data.categories
+                    },
+                };
+
+                var chart = new ApexCharts(document.querySelector("#grafikPenetasan"), options);
+                chart.render();
+            }
+        });
+    </script>
+
     {{-- Datatables --}}
     <script>
         $(document).ready(function() {
@@ -325,7 +410,7 @@
                         render: function(data, type, full, meta) {
                             return '<p class="mb-0">' + data + ' butir</p>';
                         }
-                    }, 
+                    },
                     {
                         data: 'id_penetasan',
                         searchable: true,

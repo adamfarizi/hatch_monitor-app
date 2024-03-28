@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             PeternakSeeder::class,
             PenetasanSeeder::class,
         ]);
-        Monitor::factory(500)->create();
+        // Monitor::factory(500)->create();
 
     }
 }
