@@ -45,7 +45,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/kontrolalat', [KontrolAlatController::class, 'index'])->name('kontrolalat');
     Route::get('/kontrolalat/grafik', [KontrolAlatController::class, 'grafik'])->name('kontrolalat.grafik');
-    Route::get('/kontrolalat/saveMonitor', [KontrolAlatController::class, 'getData_ThingSpeak']);
     
     Route::get('/profil/{id_peternak}', [ProfilController::class, 'index'])->name('profil');
     Route::put('/profil/{id_peternak}/edit', [ProfilController::class, 'edit']);

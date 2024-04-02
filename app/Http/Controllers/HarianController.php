@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Harian;
 use App\Models\Penetasan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class HarianController extends Controller
 {
@@ -34,8 +35,26 @@ class HarianController extends Controller
         $penetasan = Penetasan::where('id_penetasan', $id_penetasan)
             ->first();
 
+        // Data Suhu
+        $channelId = '2476613';
+        $apiKey = 'OB202AUVGT70OMR2';
+        $field1 = 'field1';
+        $field2 = 'field2';
+
+        $response = Http::get("https://api.thingspeak.com/channels/{$channelId}/feeds.json", [
+            'api_key' => $apiKey,
+            'results' => 1
+        ]);
+
+        $thingspeak = $response->json();
+        $latestData = $thingspeak['feeds'][0];
+        $suhu = $latestData[$field1];
+        $kelembaban = $latestData[$field2];
+
         return view('auth.penetasan.harian.create.create', [
             'penetasan' => $penetasan,
+            'suhu' => $suhu,
+            'kelembaban' => $kelembaban,
         ], $data);
     }
 
@@ -101,9 +120,27 @@ class HarianController extends Controller
         $harian = Harian::where('id_harian', $id_harian)
             ->first();
 
+        // Data Suhu
+        $channelId = '2476613';
+        $apiKey = 'OB202AUVGT70OMR2';
+        $field1 = 'field1';
+        $field2 = 'field2';
+
+        $response = Http::get("https://api.thingspeak.com/channels/{$channelId}/feeds.json", [
+            'api_key' => $apiKey,
+            'results' => 1
+        ]);
+
+        $thingspeak = $response->json();
+        $latestData = $thingspeak['feeds'][0];
+        $suhu = $latestData[$field1];
+        $kelembaban = $latestData[$field2];
+
         return view('auth.penetasan.harian.edit.edit', [
             'penetasan' => $penetasan,
             'harian' => $harian,
+            'suhu' => $suhu,
+            'kelembaban' => $kelembaban,
         ], $data);
     }
 

@@ -32,9 +32,9 @@
                                 <i class="bi bi-thermometer-half"></i>
                             </div>
                             <div class="ps-3">
-                                <h6>38 °C</h6>
+                                <h6>{{ $suhu }} °C</h6>
                                 <span class="text-muted small pt-1">sebelumnya </span> <span
-                                    class="text-primary small pt-2 ps-1 fw-bold">41 °C</span>
+                                    class="text-primary small pt-2 ps-1 fw-bold">{{ $suhuSebelumnya }} °C</span>
                             </div>
                         </div>
                     </div>
@@ -60,9 +60,9 @@
                                 <i class="bi bi-droplet-half"></i>
                             </div>
                             <div class="ps-3">
-                                <h6>50 %</h6>
+                                <h6>{{ $kelembaban }} %</h6>
                                 <span class="text-muted small pt-1">sebelumnya </span> <span
-                                    class="text-success small pt-2 ps-1 fw-bold">50 %</span>
+                                    class="text-success small pt-2 ps-1 fw-bold">{{ $kelembabanSebelumnya }} %</span>
                             </div>
                         </div>
                     </div>

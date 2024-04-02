@@ -73,7 +73,7 @@
                                 <div class="row mb-3" id="textSectionSuhu">
                                     <div class="input-group mb-3">
                                         <input type="number" class="form-control" aria-describedby="basic-addon2"
-                                            id="suhu_scan" name="suhu_scan" value="39" readonly>
+                                            id="suhu_scan" name="suhu_scan" value="{{ $suhu }}" readonly>
                                         <span class="input-group-text" id="basic-addon2">°C</span>
                                     </div>
                                 </div>
@@ -103,7 +103,7 @@
                                 <div class="row mb-3" id="textSectionKelembaban">
                                     <div class="input-group mb-3">
                                         <input type="number" class="form-control" aria-describedby="basic-addon2"
-                                            id="kelembaban_scan" name="kelembaban_scan" value="50" readonly>
+                                            id="kelembaban_scan" name="kelembaban_scan" value="{{ $kelembaban }}" readonly>
                                         <span class="input-group-text" id="basic-addon2">%</span>
                                     </div>
                                 </div>

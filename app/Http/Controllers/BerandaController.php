@@ -13,14 +13,20 @@ class BerandaController extends Controller
     {
         $data['title'] = 'Beranda';
 
-        $suhu = Monitor::pluck('suhu_monitor')->first();
-        $kelembaban = Monitor::pluck('suhu_monitor')->first();
+        $suhu = Monitor::orderBy('waktu_monitor', 'desc')->pluck('suhu_monitor')->first();
+        $kelembaban = Monitor::orderBy('waktu_monitor', 'desc')->pluck('kelembaban_monitor')->first();
+
+        $suhuSebelumnya = Monitor::orderBy('waktu_monitor', 'desc')->skip(1)->take(1)->pluck('suhu_monitor')->first();
+        $kelembabanSebelumnya = Monitor::orderBy('waktu_monitor', 'desc')->skip(1)->take(1)->pluck('kelembaban_monitor')->first();
+
         $telur = Penetasan::sum('total_menetas');
         $penetasan = Penetasan::count();
 
         return view('auth.beranda.beranda', [
             'suhu' => $suhu,
+            'suhuSebelumnya' => $suhuSebelumnya,
             'kelembaban' => $kelembaban,
+            'kelembabanSebelumnya' => $kelembabanSebelumnya,
             'telur' => $telur,
             'penetasan' => $penetasan,
         ], $data);
