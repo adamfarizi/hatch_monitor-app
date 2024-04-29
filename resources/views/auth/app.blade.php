@@ -4,20 +4,21 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    
+
     <title>@yield('title', $title) - Hatch Monitor</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
-    
+
     <!-- Favicons -->
     <link href="{{ asset('assets/img/logo.png') }}" rel="icon">
     <link href="{{ asset('assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
-    
+
     <!-- Google Fonts -->
     <link href="https://fonts.gstatic.com" rel="preconnect">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
         rel="stylesheet">
-    
+
     <!-- Vendor CSS Files -->
     <link href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
@@ -26,7 +27,7 @@
     <link href="{{ asset('assets/vendor/quill/quill.bubble.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/vendor/simple-datatables/style.css') }}" rel="stylesheet">
-    
+
     <!-- Template Main CSS File -->
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
 
@@ -35,6 +36,16 @@
         href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-1.13.8/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/cr-1.7.0/date-1.5.1/fc-4.3.0/fh-3.4.0/kt-2.11.0/r-2.5.0/rr-1.4.1/sc-2.3.0/sb-1.6.0/datatables.min.css"
         rel="stylesheet">
 
+    {{-- Pusher --}}
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+    <script>
+        // Menampilkan di console
+        // Pusher.logToConsole = true;
+
+        var pusher = new Pusher('db5bb8b2411eee4481cc', {
+            cluster: 'ap1'
+        });
+    </script>
 </head>
 
 <body>
@@ -124,7 +135,8 @@
 
                 {{-- Profile --}}
                 <li class="nav-item dropdown pe-3">
-                    <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                    <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#"
+                        data-bs-toggle="dropdown">
                         <img src="{{ asset('assets/img/local/user.png') }}" alt="Profile" class="rounded-circle">
                         <span class="d-none d-md-block dropdown-toggle ps-2">{{ Auth::user()->nama }}</span>
                     </a><!-- End Profile Iamge Icon -->
@@ -137,7 +149,8 @@
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="{{ route('profil', ['id_peternak' => Auth::user()->id_peternak]) }}">
+                            <a class="dropdown-item d-flex align-items-center"
+                                href="{{ route('profil', ['id_peternak' => Auth::user()->id_peternak]) }}">
                                 <i class="bi bi-person"></i>
                                 <span>Profil Saya</span>
                             </a>
@@ -157,29 +170,31 @@
             </ul>
         </nav><!-- End Icons Navigation -->
     </header><!-- End Header -->
-    
+
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
             <li class="nav-heading">Menu</li>
-            <li class="nav-item @if(request()->routeIs('beranda')) active @endif">
-                <a class="nav-link @if(!request()->routeIs('beranda')) collapsed @endif" href="{{ route('beranda') }}">
+            <li class="nav-item @if (request()->routeIs('beranda')) active @endif">
+                <a class="nav-link @if (!request()->routeIs('beranda')) collapsed @endif" href="{{ route('beranda') }}">
                     <i class="bi bi-grid"></i>
                     <span>Beranda</span>
                 </a>
             </li>
-            <li class="nav-item @if(request()->routeIs('penetasan')) active @endif">
-                <a class="nav-link @if(!request()->routeIs('penetasan')) collapsed @endif" href="{{ route('penetasan') }}">
+            <li class="nav-item @if (request()->routeIs('penetasan')) active @endif">
+                <a class="nav-link @if (!request()->routeIs('penetasan')) collapsed @endif"
+                    href="{{ route('penetasan') }}">
                     <i class="bi bi-egg"></i>
                     <span>Penetasan</span>
                 </a>
             </li>
-            <li class="nav-item @if(request()->routeIs('kontrolalat')) active @endif">
-                <a class="nav-link @if(!request()->routeIs('kontrolalat')) collapsed @endif" href="{{ route('kontrolalat') }}">
+            <li class="nav-item @if (request()->routeIs('kontrolalat')) active @endif">
+                <a class="nav-link @if (!request()->routeIs('kontrolalat')) collapsed @endif"
+                    href="{{ route('kontrolalat') }}">
                     <i class="bi bi-gear"></i>
                     <span>Kontrol Alat</span>
                 </a>
-            </li>                        
+            </li>
         </ul>
     </aside><!-- End Sidebar-->
 
@@ -216,13 +231,13 @@
 
     <!-- Template Main JS File -->
     <script src="{{ asset('assets/js/main.js') }}"></script>
-    
+
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     {{-- Custom JS --}}
     @yield('js')
-    
+
     {{-- Data Tables --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>

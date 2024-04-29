@@ -102,7 +102,7 @@
                     <div class="card-body">
                         <h5 class="card-title row">
                             <div class="col">
-                                Live Preview Alatx
+                                Live Preview Alat
                             </div>
                             <div class="col text-end">
                                 <span>
@@ -110,14 +110,15 @@
                                 </span>
                             </div>
                         </h5>
-                        <div class="container mb-1" style="height: 50vh">
+                        <div class="container mb-4" style="height: 50vh">
                             <div class="bg-dark h-100 text-center text-white live-preview-container"
                                 style="border-radius: 25px;">
                                 <img id="livePreviewImage" src="{{ $link }}" width="100%" height="100%"
                                     scrolling="no" style="border: none; border-radius: 25px; object-fit: cover;">
                                 <p id="connectionStatus" class="pt-5"
                                     style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-                                    <span><i class="ri-information-line"></i></span>Kamera tidak tersambung</p>
+                                    <span><i class="ri-information-line"></i></span>Kamera tidak tersambung
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -133,7 +134,7 @@
                             </div>
                         </h5>
                         <div class="container">
-                            <div class="py-1">
+                            {{-- <div class="py-1">
                                 <p class="small text-muted">Lampu 1</p>
                                 <div class="d-grid gap-2">
                                     <button class="btn btn-primary btn-lg" type="button">ON</button>
@@ -144,7 +145,7 @@
                                 <div class="d-grid gap-2">
                                     <button class="btn btn-primary btn-lg" type="button">ON</button>
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="py-1">
                                 <p class="small text-muted">Lampu LED</p>
                                 <div class="d-grid gap-2">
@@ -201,6 +202,7 @@
     </section>
 @endsection
 @section('js')
+    {{-- Kamera --}}
     <script>
         // Fungsi untuk memeriksa apakah gambar di URL tertentu dapat diakses
         function checkImage(url, callback) {
@@ -252,7 +254,7 @@
 
             // Fungsi untuk menggambar grafik dengan data yang diperoleh
             function drawChart(data) {
-                new ApexCharts(document.querySelector("#grafikSuhuKelembaban"), {
+                var options = {
                     series: [{
                         name: 'Suhu',
                         data: data.suhu,
@@ -300,15 +302,23 @@
                     },
                     xaxis: {
                         type: 'datetime',
-                        categories: data.categories
+                        categories: data.categories,
+                        labels: {
+                            datetimeUTC:false,
+                        }
                     },
                     tooltip: {
                         x: {
                             format: 'dd/MM/yy HH:mm'
                         },
                     }
-                }).render();
+                };
+
+                var chart = new ApexCharts(document.querySelector("#grafikSuhuKelembaban"), options);
+                chart.render();
+
             }
+
         });
     </script>
 
@@ -316,7 +326,7 @@
     <script>
         $(document).ready(function() {
             var table = $('#tableSuhuKelembaban').DataTable({
-                processing: true,
+                processing: false,
                 serverSide: true,
                 responsive: true,
                 ajax: {
@@ -383,6 +393,17 @@
                 table.ajax.reload();
             });
 
+            // Menambahkan event listener untuk event dari Pusher
+            var channel = pusher.subscribe('thingspeak-channel');
+            channel.bind('thingspeak-event', function(data) {
+                // Menambahkan data baru ke dalam DataTables
+                var newData = {
+                    waktu_monitor: data.waktu_monitor,
+                    suhu_monitor: data.suhu_monitor,
+                    kelembaban_monitor: data.kelembaban_monitor
+                };
+                table.row.add(newData).draw();
+            });
         });
     </script>
 @endsection

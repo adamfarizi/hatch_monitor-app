@@ -60,7 +60,7 @@ class KontrolAlatController extends Controller
             $suhuData[] = $monitor->suhu_monitor;
             $kelembabanData[] = $monitor->kelembaban_monitor;
         }
-
+        
         return response()->json([
             'categories' => $categories,
             'suhu' => $suhuData,

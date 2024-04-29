@@ -180,7 +180,10 @@
                     },
                     xaxis: {
                         type: 'datetime',
-                        categories: data.categories
+                        categories: data.categories,
+                        labels: {
+                            datetimeUTC:false,
+                        }
                     },
                     tooltip: {
                         x: {

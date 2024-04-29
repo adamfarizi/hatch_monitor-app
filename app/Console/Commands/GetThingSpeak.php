@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Events\ThingSpeakEvent;
 use App\Models\Monitor;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
@@ -52,6 +53,16 @@ class GetThingSpeak extends Command
             $suhu = $latestData[$field1];
             $kelembaban = $latestData[$field2];
 
+            // Kumpulkan data dalam sebuah array
+            $newData = [
+                'waktu_monitor' => $dataThingSpeak->waktu_monitor->format('Y-m-d H:i:s'), // Format sesuai yang diharapkan oleh DataTables
+                'suhu_monitor' => $suhu,
+                'kelembaban_monitor' => $kelembaban
+            ];
+
+            // Emitkan event 'thingspeak-event' dengan data baru
+            broadcast(new ThingSpeakEvent($newData));
+            
             $this->info('Data berhasil disimpan : Suhu (' . $suhu . ') & Kelembaban : (' . $kelembaban . ')');
         } else {
             $this->error('Tidak ada data yang ditemukan');
