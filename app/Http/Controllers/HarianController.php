@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Harian;
+use App\Models\Infertil;
 use App\Models\Penetasan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -28,7 +29,7 @@ class HarianController extends Controller
         ], $data);
     }
 
-    public function index_create($id_penetasan)
+    public function index_create(Request $request, $id_penetasan)
     {
         $data['title'] = 'Tambah Data Kondisi Harian';
 
@@ -51,10 +52,34 @@ class HarianController extends Controller
         $suhu = $latestData[$field1];
         $kelembaban = $latestData[$field2];
 
+        // Infertil
+        $img = $request->image;
+        $folderPath = "images/scan/";
+        $image_parts = explode(";base64,", $img);
+        $image_type_aux = explode("image/", $image_parts[0]);
+        $image_type = $image_type_aux[1];
+        $image_base64 = base64_decode($image_parts[1]);
+        $timestamp = time();
+        $dateTime = date('H-i_d-m-Y', $timestamp);
+        $fileName = $dateTime . '.png';        
+        $file = $folderPath . $fileName;
+        file_put_contents($file, $image_base64);
+
+        // Mengirim gambar ke endpoint Flask
+        $response = Http::attach(
+            'image',
+            file_get_contents(public_path($file)),
+            $fileName
+        )->post('http://localhost:8500/detect-objects');
+        
+        $infertil = intval($response->json());
+
         return view('auth.penetasan.harian.create.create', [
             'penetasan' => $penetasan,
             'suhu' => $suhu,
             'kelembaban' => $kelembaban,
+            'infertil' => $infertil,
+            'imagePath' => $fileName,
         ], $data);
     }
 
@@ -71,6 +96,8 @@ class HarianController extends Controller
                 'kelembaban_radio' => 'required',
                 'kelembaban_scan' => 'required_if:kelembaban_radio,scan',
                 'kelembaban_manual' => 'required_if:kelembaban_radio,manual',
+                'jumlah_infertil' => 'required',
+                'bukti_scan' => 'required',
             ]);
 
             // Tentukan nilai suhu berdasarkan pilihan radio
@@ -81,13 +108,22 @@ class HarianController extends Controller
 
             $deskripsi = $request->input('deskripsi') == null ? 'Tidak ada catatan' : $request->input('deskripsi');
 
-            Harian::create([
+            $harian = Harian::create([
                 'id_penetasan' => $id_penetasan,
                 'waktu_harian' => $request->input('waktu_harian'),
                 'menetas' => $request->input('menetas'),
                 'suhu_harian' => $suhu,
                 'kelembaban_harian' => $kelembaban,
                 'deskripsi' => $deskripsi,
+                'bukti_harian' => $request->input('bukti_scan'),
+            ]);
+
+            $infertil = Infertil::create([
+                'id_harian' => $harian->id_harian,
+                'waktu_infertil' => $request->input('waktu_harian'),
+                'nomor_telur' => null,
+                'jumlah_infertil' => $request->input('jumlah_infertil'),
+                'bukti_infertil' => $request->input('bukti_scan'),
             ]);
 
             $rata_rata_suhu = Harian::where('id_penetasan', $id_penetasan)->avg('suhu_harian');
@@ -120,6 +156,9 @@ class HarianController extends Controller
         $harian = Harian::where('id_harian', $id_harian)
             ->first();
 
+        $infertil = Infertil::where('id_harian', $id_harian)
+            ->first();
+
         // Data Suhu
         $channelId = '2476613';
         $apiKey = 'OB202AUVGT70OMR2';
@@ -139,6 +178,7 @@ class HarianController extends Controller
         return view('auth.penetasan.harian.edit.edit', [
             'penetasan' => $penetasan,
             'harian' => $harian,
+            'infertil' => $infertil,
             'suhu' => $suhu,
             'kelembaban' => $kelembaban,
         ], $data);
@@ -230,6 +270,9 @@ class HarianController extends Controller
     public function delete($id_penetasan, $id_harian)
     {
         try {
+            $infertil = Infertil::where('id_harian', $id_harian)->first();
+            $infertil->delete();
+
             $harian = Harian::where('id_harian', $id_harian)->first();
             if (!$harian) {
                 throw new \Exception('Harian tidak ditemukan.');

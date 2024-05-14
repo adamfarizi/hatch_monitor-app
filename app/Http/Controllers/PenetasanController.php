@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Harian;
+use App\Models\Infertil;
 use App\Models\Penetasan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -61,10 +63,10 @@ class PenetasanController extends Controller
     public function create(Request $request)
     {
         try {
-            $this->validate($request,[
+            $this->validate($request, [
                 'tanggal_mulai' => 'required',
                 'jumlah_telur' => 'required',
-            ],[
+            ], [
                 'tanggal_mulai' => 'Masukkan tanggal mulai terlebih dahulu !',
                 'jumlah_telur' => 'Masukan jumlah telur terlebih dahulu !',
             ]);
@@ -92,10 +94,10 @@ class PenetasanController extends Controller
     public function edit(Request $request, $id_penetasan)
     {
         try {
-            $this->validate($request,[
+            $this->validate($request, [
                 'tanggal_mulai' => 'required',
                 'jumlah_telur' => 'required',
-            ],[
+            ], [
                 'tanggal_mulai' => 'Masukkan tanggal mulai terlebih dahulu !',
                 'jumlah_telur' => 'Masukan jumlah telur terlebih dahulu !',
             ]);
@@ -122,6 +124,9 @@ class PenetasanController extends Controller
     public function delete($id_penetasan)
     {
         try {
+            $id_harian_penetasan = Harian::where('id_penetasan', $id_penetasan)->pluck('id_harian');
+            $infertil = Infertil::whereIn('id_harian', $id_harian_penetasan)->delete();
+            $harian = Harian::where('id_penetasan', $id_penetasan)->delete();
             $penetasan = Penetasan::where('id_penetasan', $id_penetasan);
             if (!$penetasan) {
                 throw new \Exception('Penetasan tidak ditemukan.');

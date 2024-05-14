@@ -6,7 +6,8 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="">Home</a></li>
                 <li class="breadcrumb-item"><a href="{{ route('penetasan') }}">Penetasan</a></li>
-                <li class="breadcrumb-item"><a href="{{ url('/penetasan/' . $penetasan->id_penetasan . '/harian') }}">Cek Kondisi Harian</a></li>
+                <li class="breadcrumb-item"><a href="{{ url('/penetasan/' . $penetasan->id_penetasan . '/harian') }}">Cek
+                        Kondisi Harian</a></li>
                 <li class="breadcrumb-item active">@yield('title', $title)</li>
             </ol>
         </nav>
@@ -50,8 +51,25 @@
                         <label for="inputEmail3" class="col-sm-2 col-form-label">Infertil <span
                                 class="text-danger">*</span></label>
                         <div class="col-sm-10">
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#scaninfertil"><i class="bi bi-camera me-1"></i> Scan Infertil</button>
+                            <div class="row">
+                                <div class="col input-group mb-3">
+                                    <input type="number" class="form-control" aria-describedby="basic-addon2"
+                                        id="jumlah_infertil" name="jumlah_infertil" value="{{ $infertil }}" readonly>
+                                    <span class="input-group-text" id="basic-addon2">Telur</span>
+                                </div>
+                            </div>
+                            <div class="container mb-3" style="height: 40vh">
+                                <div class="col input-group">
+                                    <input type="hidden" class="form-control" aria-describedby="basic-addon2"
+                                        id="bukti_scan" name="bukti_scan" value="{{ $imagePath }}" readonly>
+                                </div>
+                                <div class="bg-secondary h-100 text-center text-white"
+                                    style="border-radius: 25px; position: relative; overflow: hidden; width:450px;">
+                                    <div style="width: 100%; height: 100%; object-fit: cover;">
+                                        <img src="{{ asset('images/scan/'.$imagePath) }}" alt="">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -101,7 +119,8 @@
                                 <div class="row mb-3" id="textSectionKelembaban">
                                     <div class="input-group mb-3">
                                         <input type="number" class="form-control" aria-describedby="basic-addon2"
-                                            id="kelembaban_scan" name="kelembaban_scan" value="{{ $kelembaban }}" readonly>
+                                            id="kelembaban_scan" name="kelembaban_scan" value="{{ $kelembaban }}"
+                                            readonly>
                                         <span class="input-group-text" id="basic-addon2">%</span>
                                     </div>
                                 </div>
@@ -133,38 +152,6 @@
             </div>
         </div>
     </section>
-
-    {{-- Modal Infertil --}}
-    <div class="modal fade" id="scaninfertil" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold" style="color: #012970;">Scan Infertil</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form action="{{ url('/penetasan/create') }}" method="POST">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="form-group mb-3">
-                            <label for="inputDate" class="form-label">Tanggal Mulai <span
-                                    class="text-danger">*</span></label>
-                            <input type="datetime-local" class="form-control" id="tanggal_mulai" name="tanggal_mulai"
-                                required>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="inputDate" class="form-label">Jumlah Telur <span
-                                    class="text-danger">*</span></label>
-                            <input type="number" class="form-control" id="jumlah_telur" name="jumlah_telur" required>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 @endsection
 @section('js')
     <script>

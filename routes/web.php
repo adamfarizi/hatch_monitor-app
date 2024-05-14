@@ -37,7 +37,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/penetasan/{id_penetasan}/edit', [PenetasanController::class, 'edit']);
     Route::delete('/penetasan/{id_penetasan}/delete', [PenetasanController::class, 'delete']);
     Route::get('/penetasan/{id_penetasan}/harian', [HarianController::class, 'index']);
-    Route::get('/penetasan/{id_penetasan}/harian/create', [HarianController::class, 'index_create']);
+    Route::post('/penetasan/{id_penetasan}/harian/index_create', [HarianController::class, 'index_create']);
     Route::post('/penetasan/{id_penetasan}/harian/create', [HarianController::class, 'create']);
     Route::get('/penetasan/{id_penetasan}/harian/{id_harian}/edit', [HarianController::class, 'index_edit']);
     Route::put('/penetasan/{id_penetasan}/harian/{id_harian}/edit', [HarianController::class, 'edit']);

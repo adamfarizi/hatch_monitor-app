@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('id_infertil');
             $table->unsignedBigInteger('id_harian');
             $table->dateTime('waktu_infertil');
-            $table->string('nomor_telur', 255);
+            $table->string('nomor_telur', 255)->nullable();
             $table->integer('jumlah_infertil');
             $table->string('bukti_infertil', 255)->nullable();
             $table->timestamps();

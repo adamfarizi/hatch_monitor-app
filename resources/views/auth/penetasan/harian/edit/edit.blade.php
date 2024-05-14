@@ -51,8 +51,13 @@
                         <label for="inputEmail3" class="col-sm-2 col-form-label">Infertil <span
                                 class="text-danger">*</span></label>
                         <div class="col-sm-10">
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#scaninfertil"><i class="bi bi-camera me-1"></i> Scan Infertil</button>
+                            <div class="row">
+                                <div class="col input-group">
+                                    <input type="number" class="form-control" aria-describedby="basic-addon2"
+                                        id="jumlah_infertil" name="jumlah_infertil" value="{{ $infertil->jumlah_infertil }}" readonly>
+                                    <span class="input-group-text" id="basic-addon2">Telur</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="row mb-3">

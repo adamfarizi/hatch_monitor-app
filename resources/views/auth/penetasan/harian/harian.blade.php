@@ -37,13 +37,22 @@
                 <h5 class="card-title row">
                     <div class="col">Data Kondisi Harian Telur</div>
                     <div class="col text-end">
-                        <a type="button" class="btn btn-primary"
-                            href="{{ url('/penetasan/' . $penetasan->id_penetasan . '/harian/create') }}"><i
-                                class="bi bi-plus-lg me-1"></i> Tambah
-                            Penetasan</a>
+                        <form method="POST"
+                            action="{{ url('/penetasan/' . $penetasan->id_penetasan . '/harian/index_create') }}">
+                            @csrf
+                            <div class="row">
+                                <div id="my_camera" style="display: none;"></div>
+                                <div class="col-md-6">
+                                    <input type="hidden" name="image" class="image-tag">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-plus-lg me-1"></i> Tambah Penetasan
+                            </button>
+                        </form>
                     </div>
                 </h5>
-                <div class="d-flex">
+                <div class="d-flex mb-3">
                     <div class="col">
                         <table class="table table-borderless">
                             <tbody>
@@ -74,12 +83,6 @@
                                     <td>:</td>
                                     <td>{{ $penetasan->total_menetas }} butir</td>
                                 </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="col">
-                        <table class="table table-borderless">
-                            <tbody>
                                 <tr>
                                     <td class="fw-semibold">Rata-rata Suhu</td>
                                     <td>:</td>
@@ -92,6 +95,18 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                    <div class="col">
+                        <div class="col container">
+                            <div class="container mb-1" style="height: 40vh">
+                                <div class="bg-secondary h-100 text-center text-white"
+                                    style="border-radius: 25px; position: relative; overflow: hidden; width:450px;">
+                                    <div id="imageResult" onclick="window.location.reload()"
+                                        style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="container p-4" style="border-radius: 15px; background-color: #f6f9ff;">
@@ -138,17 +153,17 @@
                                                     <td>:</td>
                                                     <td>{{ $harian->kelembaban_harian }} %</td>
                                                 </tr>
-                                                {{-- @if ($penetasan->id_infertil)     --}}
-                                                <tr>
-                                                    <td colspan="3">
-                                                        <p class="fw-semibold mb-0">Infertil</p>
-                                                        <ul>
-                                                            <li>Nomor Telur : A1, B2, B3</li>
-                                                            <li>Jumlah : 3</li>
-                                                        </ul>
-                                                    </td>
-                                                </tr>
-                                                {{-- @endif --}}
+                                                @foreach ($harian->infertil as $infertil)
+                                                    <tr>
+                                                        <td colspan="3">
+                                                            <p class="fw-semibold mb-0">Infertil</p>
+                                                            <ul>
+                                                                {{-- <li>Nomor Telur : A1, B2, B3</li> --}}
+                                                                <li>Jumlah : {{ $infertil->jumlah_infertil }}</li>
+                                                            </ul>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
                                                 <tr>
                                                     <td colspan="3">
                                                         <p class="fw-semibold mb-0">Deskripsi</p>
@@ -160,13 +175,18 @@
                                     </div>
                                     <div class="col container">
                                         <div class="container mb-1" style="height: 40vh">
-                                            <div class="bg-secondary h-100 text-center text-white"
-                                                style="border-radius: 25px;">
-                                                <p style="padding-top: 19vh">
-                                                    <i class="bi bi-exclamation-circle-fill"></i>
-                                                    <span>Belum ada gambar</span>
-                                                </p>
-                                            </div>
+                                            @if ($harian->bukti_harian)
+                                                <img src="{{ asset('images/scan/' . $harian->bukti_harian) }}"
+                                                    class="img-fluid" alt="Bukti Harian" style="border-radius: 25px;">
+                                            @else
+                                                <div class="bg-secondary h-100 text-center text-white"
+                                                    style="border-radius: 25px;">
+                                                    <p style="padding-top: 19vh">
+                                                        <i class="bi bi-exclamation-circle-fill"></i>
+                                                        <span>Belum ada gambar</span>
+                                                    </p>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -203,7 +223,6 @@
                             <div class="container text-center p-3">
                                 <img src="{{ asset('assets/img/local/danger.png') }}" width="80px" alt="">
                                 <h3 class="mt-4 fw-bold">Anda yakin ingin hapus data ini ?</h3>
-                                {{ $harian->id_harian }}
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -217,4 +236,95 @@
     @endforeach
 @endsection
 @section('js')
+    {{-- <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const imageContainer = document.getElementById('imageContainer');
+            const imageIcon = document.getElementById('imageIcon');
+            const imageStatus = document.getElementById('imageStatus');
+            const webcamVideo = document.getElementById('webcamVideo');
+            let imageDataUrl = null;
+
+            navigator.mediaDevices.getUserMedia({
+                    video: true
+                })
+                .then(stream => {
+                    webcamVideo.srcObject = stream;
+
+                    // Capture image automatically after a short delay
+                    setTimeout(captureImage, 100); // Adjust the delay as needed
+                })
+                .catch(error => {
+                    console.error('Error accessing webcam:', error);
+                    imageIcon.classList.add('bi-exclamation-circle-fill');
+                    imageStatus.textContent = 'Error: Webcam tidak tersedia';
+                });
+
+            function captureImage() {
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                const video = document.getElementById('webcamVideo');
+                const containerWidth = imageContainer.offsetWidth;
+                const containerHeight = imageContainer.offsetHeight;
+
+                canvas.width = containerWidth;
+                canvas.height = containerHeight;
+
+                // Scale video to fit container
+                const scaleX = containerWidth / video.videoWidth;
+                const scaleY = containerHeight / video.videoHeight;
+                const scale = Math.max(scaleX, scaleY);
+                const xOffset = (containerWidth - video.videoWidth * scale) / 2;
+                const yOffset = (containerHeight - video.videoHeight * scale) / 2;
+
+                context.drawImage(video, xOffset, yOffset, video.videoWidth * scale, video.videoHeight * scale);
+                imageDataUrl = canvas.toDataURL('image/png');
+
+                // Stop video stream
+                const stream = webcamVideo.srcObject;
+                const tracks = stream.getTracks();
+                tracks.forEach(track => track.stop());
+
+                // Update UI
+                const imageOverlay = document.getElementById('imageOverlay');
+                imageOverlay.innerHTML = '';
+                const capturedImage = new Image();
+                capturedImage.src = imageDataUrl;
+                capturedImage.style.maxWidth = '100%';
+                capturedImage.style.maxHeight = '100%';
+                imageOverlay.appendChild(capturedImage);
+                imageIcon.classList.remove('bi-exclamation-circle-fill');
+                imageIcon.classList.add('bi-check-circle-fill');
+                imageStatus.textContent = 'Gambar berhasil diambil';
+            }
+        });
+    </script> --}}
+
+    <script language="JavaScript">
+        Webcam.set({
+            width: 450,
+            height: 280,
+            dest_width: 450,
+            dest_height: 280,
+            image_format: 'jpeg',
+            jpeg_quality: 100
+        });
+
+        Webcam.attach('#my_camera');
+
+        setTimeout(take_snapshot, 2000); // Sesuaikan delay jika diperlukan
+
+        function take_snapshot() {
+            Webcam.snap(function(data_uri) {
+                $(".image-tag").val(data_uri);
+
+                const imageResult = document.getElementById('imageResult');
+                imageResult.innerHTML = '<img src="' + data_uri +
+                    '" style="width: 100%; height: 100%; object-fit: cover;">';
+
+                // Sembunyikan kamera setelah tangkapan gambar dilakukan
+                Webcam.reset();
+                document.getElementById('my_camera').style.display = 'none';
+            });
+        }
+    </script>
 @endsection
