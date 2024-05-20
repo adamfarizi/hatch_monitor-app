@@ -152,8 +152,23 @@ class HarianController extends Controller
             $rata_rata_kelembaban = Harian::where('id_penetasan', $id_penetasan)->avg('kelembaban_harian');
 
             $penetasan = Penetasan::where('id_penetasan', $id_penetasan)->first();
+
+            // Cek tanggal scan
+            $batas_scan = Carbon::parse($penetasan->batas_scan)->startOfDay();
+            $today = Carbon::now()->startOfDay();
+
+            if ($batas_scan->lt($today)) {
+                $prediksi_menetas = $penetasan->prediksi_menetas;
+
+            } elseif ($batas_scan->eq($today)) {
+                $prediksi_menetas = $penetasan->jumlah_telur - $request->input('jumlah_infertil');
+
+            } else {
+                $prediksi_menetas = $penetasan->jumlah_telur - $request->input('jumlah_infertil');
+
+            }
             Penetasan::where('id_penetasan', $id_penetasan)->update([
-                'prediksi_menetas' => $penetasan->jumlah_telur - $request->input('jumlah_infertil'),
+                'prediksi_menetas' => $prediksi_menetas,
                 'total_menetas' => $penetasan->total_menetas + $request->input('menetas'),
                 'rata_rata_suhu' => $rata_rata_suhu,
                 'rata_rata_kelembaban' => $rata_rata_kelembaban,
@@ -300,12 +315,9 @@ class HarianController extends Controller
                 throw new \Exception('Harian tidak ditemukan.');
             }
 
-            // Path gambar yang akan dihapus
-            $imagePath = public_path('images/scan/' . $harian->bukti_gambar);
-
             // Hapus gambar jika ada
-            if (File::exists($imagePath)) {
-                File::delete($imagePath);
+            if (File::exists('images/scan/' . $harian->bukti_harian)) {
+                File::delete('images/scan/' . $harian->bukti_harian);
             }
 
             $penetasan = Penetasan::where('id_penetasan', $id_penetasan)->first();

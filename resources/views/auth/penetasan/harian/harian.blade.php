@@ -57,8 +57,8 @@
                         </form>
                     </div>
                 </h5>
-                <div class="d-flex mb-3">
-                    <div class="col">
+                <div class="d-flex flex-column flex-lg-row mb-3">
+                    <div class="col-12 col-lg-6">
                         <table class="table table-borderless">
                             <tbody>
                                 <tr>
@@ -107,14 +107,13 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="col">
-                        <div class="col container">
-                            <div class="container mb-1" style="height: 40vh">
-                                <div class="bg-secondary h-100 text-center text-white"
-                                    style="border-radius: 25px; position: relative; overflow: hidden; width:450px;">
-                                    <div id="imageResult" onclick="window.location.reload()"
-                                        style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;">
-                                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div id="container" class="container mb-1">
+                            <p class="fw-semibold">Hasil Capture <span class="ms-5 fw-normal">:</span></p>
+                            <div id="imageWrapper" class="bg-secondary h-100 text-center text-white"
+                                style="border-radius: 25px; position: relative; overflow: hidden; max-width:450px;">
+                                <div id="imageResult" onclick="window.location.reload()"
+                                    style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;">
                                 </div>
                             </div>
                         </div>
@@ -125,28 +124,27 @@
                     @forelse ($harians as $harian)
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title d-flex">
-                                    <div class="col">
+                                {{-- Nav --}}
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h5 class="card-title">
                                         {{ \Carbon\Carbon::parse($harian->waktu_harian)->locale('id')->translatedFormat('l, j F Y (H:i)') }}
+                                    </h5>
+                                    <div class="filter">
+                                        <a class="icon" href="#" data-bs-toggle="dropdown"><i
+                                                class="bi bi-three-dots" style="font-size: 20px;"></i></a>
+                                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                            <li><a class="dropdown-item"
+                                                    href="{{ url('/penetasan/' . $penetasan->id_penetasan . '/harian/' . $harian->id_harian . '/edit') }}"><i
+                                                        class="bi bi-pencil-square"></i> Edit</a></li>
+                                            <li><a class="dropdown-item text-danger" href="#" data-bs-toggle="modal"
+                                                    data-bs-target="#deleteData{{ $harian->id_harian }}"><i
+                                                        class="bi bi-trash"></i> Delete</a></li>
+                                        </ul>
                                     </div>
-                                    <div class="col text-end">
-                                        <div class="filter">
-                                            <a class="icon" href="#" data-bs-toggle="dropdown"><i
-                                                    class="bi bi-three-dots"></i></a>
-                                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                                <li><a class="dropdown-item"
-                                                        href="{{ url('/penetasan/' . $penetasan->id_penetasan . '/harian/' . $harian->id_harian . '/edit') }}"><i
-                                                            class="bi bi-pencil-square"></i></span>Edit</a></li>
-                                                <li><a class="dropdown-item text-danger" href="#"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#deleteData{{ $harian->id_harian }}"><i
-                                                            class="bi bi-trash"></i></span>Delete</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </h5>
-                                <div class="d-flex">
-                                    <div class="col">
+                                </div>
+                                {{-- Content --}}
+                                <div class="row">
+                                    <div class="col-md-6">
                                         <table class="table table-borderless">
                                             <tbody>
                                                 <tr>
@@ -184,15 +182,16 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="col container">
-                                        <div class="container mb-1" style="height: 40vh">
+                                    <div class="col-md-6">
+                                        <p class="fw-semibold">Bukti Capture <span class="ms-5 fw-normal">:</span></p>
+                                        <div class="mb-1" style="max-height: 40vh; max-width: 450px;">
                                             @if ($harian->bukti_harian)
                                                 <img src="{{ asset('images/scan/' . $harian->bukti_harian) }}"
                                                     class="img-fluid" alt="Bukti Harian" style="border-radius: 25px;">
                                             @else
                                                 <div class="bg-secondary h-100 text-center text-white"
                                                     style="border-radius: 25px;">
-                                                    <p style="padding-top: 19vh">
+                                                    <p style="padding-top: 18vh; padding-bottom: 18vh;">
                                                         <i class="bi bi-exclamation-circle-fill"></i>
                                                         <span>Belum ada gambar</span>
                                                     </p>
@@ -247,68 +246,29 @@
     @endforeach
 @endsection
 @section('js')
-    {{-- <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const imageContainer = document.getElementById('imageContainer');
-            const imageIcon = document.getElementById('imageIcon');
-            const imageStatus = document.getElementById('imageStatus');
-            const webcamVideo = document.getElementById('webcamVideo');
-            let imageDataUrl = null;
+    <script>
+        window.onload = function() {
+            adjustContainerHeight();
+        };
 
-            navigator.mediaDevices.getUserMedia({
-                    video: true
-                })
-                .then(stream => {
-                    webcamVideo.srcObject = stream;
+        window.onresize = function() {
+            adjustContainerHeight();
+        };
 
-                    // Capture image automatically after a short delay
-                    setTimeout(captureImage, 100); // Adjust the delay as needed
-                })
-                .catch(error => {
-                    console.error('Error accessing webcam:', error);
-                    imageIcon.classList.add('bi-exclamation-circle-fill');
-                    imageStatus.textContent = 'Error: Webcam tidak tersedia';
-                });
+        function adjustContainerHeight() {
+            var container = document.getElementById("container");
+            var imageWrapper = document.getElementById("imageWrapper");
+            var screenWidth = window.innerWidth;
 
-            function captureImage() {
-                const canvas = document.createElement('canvas');
-                const context = canvas.getContext('2d');
-                const video = document.getElementById('webcamVideo');
-                const containerWidth = imageContainer.offsetWidth;
-                const containerHeight = imageContainer.offsetHeight;
-
-                canvas.width = containerWidth;
-                canvas.height = containerHeight;
-
-                // Scale video to fit container
-                const scaleX = containerWidth / video.videoWidth;
-                const scaleY = containerHeight / video.videoHeight;
-                const scale = Math.max(scaleX, scaleY);
-                const xOffset = (containerWidth - video.videoWidth * scale) / 2;
-                const yOffset = (containerHeight - video.videoHeight * scale) / 2;
-
-                context.drawImage(video, xOffset, yOffset, video.videoWidth * scale, video.videoHeight * scale);
-                imageDataUrl = canvas.toDataURL('image/png');
-
-                // Stop video stream
-                const stream = webcamVideo.srcObject;
-                const tracks = stream.getTracks();
-                tracks.forEach(track => track.stop());
-
-                // Update UI
-                const imageOverlay = document.getElementById('imageOverlay');
-                imageOverlay.innerHTML = '';
-                const capturedImage = new Image();
-                capturedImage.src = imageDataUrl;
-                capturedImage.style.maxWidth = '100%';
-                capturedImage.style.maxHeight = '100%';
-                imageOverlay.appendChild(capturedImage);
-                imageIcon.classList.remove('bi-exclamation-circle-fill');
-                imageIcon.classList.add('bi-check-circle-fill');
-                imageStatus.textContent = 'Gambar berhasil diambil';
+            if (screenWidth <= 576) {
+                container.style.maxHeight = "40vh";
+                imageWrapper.style.maxHeight = "40vh";
+            } else {
+                container.style.height = "40vh";
+                imageWrapper.style.height = "40vh";
             }
-        });
-    </script> --}}
+        }
+    </script>
 
     {{-- Webcam --}}
     <script language="JavaScript">

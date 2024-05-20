@@ -8,6 +8,7 @@ use App\Models\Penetasan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Yajra\DataTables\DataTables;
 
 class PenetasanController extends Controller
@@ -146,7 +147,16 @@ class PenetasanController extends Controller
         try {
             $id_harian_penetasan = Harian::where('id_penetasan', $id_penetasan)->pluck('id_harian');
             $infertil = Infertil::whereIn('id_harian', $id_harian_penetasan)->delete();
-            $harian = Harian::where('id_penetasan', $id_penetasan)->delete();
+            $harianList = Harian::where('id_penetasan', $id_penetasan)->get();
+
+            // Hapus gambar jika ada dan hapus data Harian
+            foreach ($harianList as $harian) {
+                if (File::exists(public_path('images/scan/' . $harian->bukti_harian))) {
+                    File::delete(public_path('images/scan/' . $harian->bukti_harian));
+                }
+                $harian->delete();
+            }
+
             $penetasan = Penetasan::where('id_penetasan', $id_penetasan);
             if (!$penetasan) {
                 throw new \Exception('Penetasan tidak ditemukan.');

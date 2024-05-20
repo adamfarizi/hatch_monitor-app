@@ -58,13 +58,13 @@
                                     <span class="input-group-text" id="basic-addon2">Telur</span>
                                 </div>
                             </div>
-                            <div class="container mb-3" style="height: 40vh">
+                            <div class="container mb-3" style="max-height: 40vh">
                                 <div class="col input-group">
                                     <input type="hidden" class="form-control" aria-describedby="basic-addon2"
                                         id="bukti_scan" name="bukti_scan" value="{{ $imagePath }}" readonly>
                                 </div>
                                 <div class="bg-secondary h-100 text-center text-white"
-                                    style="border-radius: 25px; position: relative; overflow: hidden; width:450px;">
+                                    style="border-radius: 25px; position: relative; overflow: hidden; max-width:450px;">
                                     <div style="width: 100%; height: 100%; object-fit: cover;">
                                         <img src="{{ asset('images/scan/'.$imagePath) }}" alt="">
                                     </div>
