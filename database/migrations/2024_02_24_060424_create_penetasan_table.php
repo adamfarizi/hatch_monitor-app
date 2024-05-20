@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_peternak');
             $table->dateTime('tanggal_mulai');
             $table->dateTime('tanggal_selesai');
+            $table->dateTime('batas_scan');
             $table->integer('jumlah_telur');
             $table->integer('prediksi_menetas')->default(0);
             $table->integer('total_menetas')->default(0);

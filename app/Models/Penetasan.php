@@ -15,6 +15,7 @@ class Penetasan extends Model
         'id_peternak', 
         'tanggal_mulai', 
         'tanggal_selesai', 
+        'batas_scan',
         'jumlah_telur', 
         'prediksi_menetas',
         'total_menetas',

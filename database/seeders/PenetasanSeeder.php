@@ -19,7 +19,8 @@ class PenetasanSeeder extends Seeder
         $penetasan = Penetasan::create([
             'id_peternak' => 1,
             'tanggal_mulai' => now()->subDays(22),
-            'tanggal_selesai' => now(), // Tanggal selesai adalah 23 hari setelah tanggal mulai
+            'tanggal_selesai' => now(),
+            'batas_scan' => now()->subDays(17),
             'jumlah_telur' => 100,
             'prediksi_menetas' => 80,
             'total_menetas' => 0,

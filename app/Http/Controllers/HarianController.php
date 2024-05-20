@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Harian;
 use App\Models\Infertil;
 use App\Models\Penetasan;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 
 class HarianController extends Controller
@@ -52,7 +54,7 @@ class HarianController extends Controller
         $suhu = $latestData[$field1];
         $kelembaban = $latestData[$field2];
 
-        // Infertil
+        // Menyimpan gambar infertil
         $img = $request->image;
         $folderPath = "images/scan/";
         $image_parts = explode(";base64,", $img);
@@ -61,18 +63,38 @@ class HarianController extends Controller
         $image_base64 = base64_decode($image_parts[1]);
         $timestamp = time();
         $dateTime = date('H-i_d-m-Y', $timestamp);
-        $fileName = $dateTime . '.png';        
+        $fileName = $dateTime . '.png';
         $file = $folderPath . $fileName;
         file_put_contents($file, $image_base64);
 
-        // Mengirim gambar ke endpoint Flask
-        $response = Http::attach(
-            'image',
-            file_get_contents(public_path($file)),
-            $fileName
-        )->post('http://localhost:8500/detect-objects');
-        
-        $infertil = intval($response->json());
+        // Cek tanggal scan
+        $batas_scan = Carbon::parse($penetasan->batas_scan)->startOfDay();
+        $today = Carbon::now()->startOfDay();
+
+        if ($batas_scan->lt($today)) {
+            $infertil = 0;
+
+        } elseif ($batas_scan->eq($today)) {
+            // Mengirim gambar ke endpoint Flask
+            $response = Http::attach(
+                'image',
+                file_get_contents(public_path($file)),
+                $fileName
+            )->post('http://localhost:8500/detect-objects');
+
+            $infertil = intval($response->json());
+
+        } else {
+            // Mengirim gambar ke endpoint Flask
+            $response = Http::attach(
+                'image',
+                file_get_contents(public_path($file)),
+                $fileName
+            )->post('http://localhost:8500/detect-objects');
+
+            $infertil = intval($response->json());
+
+        }
 
         return view('auth.penetasan.harian.create.create', [
             'penetasan' => $penetasan,
@@ -131,6 +153,7 @@ class HarianController extends Controller
 
             $penetasan = Penetasan::where('id_penetasan', $id_penetasan)->first();
             Penetasan::where('id_penetasan', $id_penetasan)->update([
+                'prediksi_menetas' => $penetasan->jumlah_telur - $request->input('jumlah_infertil'),
                 'total_menetas' => $penetasan->total_menetas + $request->input('menetas'),
                 'rata_rata_suhu' => $rata_rata_suhu,
                 'rata_rata_kelembaban' => $rata_rata_kelembaban,
@@ -271,22 +294,36 @@ class HarianController extends Controller
     {
         try {
             $infertil = Infertil::where('id_harian', $id_harian)->first();
-            $infertil->delete();
 
             $harian = Harian::where('id_harian', $id_harian)->first();
             if (!$harian) {
                 throw new \Exception('Harian tidak ditemukan.');
             }
 
+            // Path gambar yang akan dihapus
+            $imagePath = public_path('images/scan/' . $harian->bukti_gambar);
+
+            // Hapus gambar jika ada
+            if (File::exists($imagePath)) {
+                File::delete($imagePath);
+            }
+
             $penetasan = Penetasan::where('id_penetasan', $id_penetasan)->first();
             Penetasan::where('id_penetasan', $id_penetasan)->update([
                 'total_menetas' => $penetasan->total_menetas - $harian->menetas,
+                'prediksi_menetas' => $penetasan->prediksi_menetas + $infertil->jumlah_infertil
             ]);
 
+            $infertil->delete();
             $harian->delete();
 
             $rata_rata_suhu = Harian::where('id_penetasan', $id_penetasan)->avg('suhu_harian');
             $rata_rata_kelembaban = Harian::where('id_penetasan', $id_penetasan)->avg('kelembaban_harian');
+
+            // Menggunakan operator ternary untuk menggantikan null dengan 0
+            $rata_rata_suhu = $rata_rata_suhu ?? 0;
+            $rata_rata_kelembaban = $rata_rata_kelembaban ?? 0;
+
             Penetasan::where('id_penetasan', $id_penetasan)->update([
                 'rata_rata_suhu' => $rata_rata_suhu,
                 'rata_rata_kelembaban' => $rata_rata_kelembaban,

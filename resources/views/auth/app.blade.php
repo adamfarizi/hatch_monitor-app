@@ -36,7 +36,7 @@
         href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-1.13.8/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/cr-1.7.0/date-1.5.1/fc-4.3.0/fh-3.4.0/kt-2.11.0/r-2.5.0/rr-1.4.1/sc-2.3.0/sb-1.6.0/datatables.min.css"
         rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.25/webcam.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     {{-- Pusher --}}
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
@@ -66,72 +66,46 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
                         <i class="bi bi-bell"></i>
-                        <span class="badge bg-primary badge-number">4</span>
+                        @if (isset($notifications) && count($notifications) > 0)
+                            <span class="badge bg-primary badge-number">{{ count($notifications) }}</span>
+                        @endif
                     </a><!-- End Notification Icon -->
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
                         <li class="dropdown-header">
-                            You have 4 new notifications
-                            <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+                            Anda memiliki {{ isset($notifications) ? count($notifications) : 0 }} notifikasi baru
                         </li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
 
-                        <li class="notification-item">
-                            <i class="bi bi-exclamation-circle text-warning"></i>
-                            <div>
-                                <h4>Lorem Ipsum</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
-                                <p>30 min. ago</p>
-                            </div>
-                        </li>
-
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-
-                        <li class="notification-item">
-                            <i class="bi bi-x-circle text-danger"></i>
-                            <div>
-                                <h4>Atque rerum nesciunt</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
-                                <p>1 hr. ago</p>
-                            </div>
-                        </li>
-
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-
-                        <li class="notification-item">
-                            <i class="bi bi-check-circle text-success"></i>
-                            <div>
-                                <h4>Sit rerum fuga</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
-                                <p>2 hrs. ago</p>
-                            </div>
-                        </li>
-
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-
-                        <li class="notification-item">
-                            <i class="bi bi-info-circle text-primary"></i>
-                            <div>
-                                <h4>Dicta reprehenderit</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
-                                <p>4 hrs. ago</p>
-                            </div>
-                        </li>
-
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li class="dropdown-footer">
-                            <a href="#">Show all notifications</a>
-                        </li>
-
+                        @if (isset($notifications) && count($notifications) > 0)
+                            @foreach ($notifications as $notification)
+                                <li class="notification-item" style="cursor: pointer;"
+                                    onclick="redirectToPenetasan('{{ $notification->id_penetasan }}')">
+                                    <i class="bi bi-exclamation-circle text-warning"></i>
+                                    <div>
+                                        <h4>Pemberitahuan Sistem !</h4>
+                                        <p>Penetasan tanggal
+                                            {{ date('d/m/Y', strtotime($notification->tanggal_mulai)) }} sudah memasuki
+                                            hari
+                                            ke-10. Telur yang tidak memiliki fertil harap dikeluarkan dari alat!</p>
+                                        <p>{{ \Carbon\Carbon::parse($notification->batas_scan)->diffForHumans() }}</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                            @endforeach
+                        @else
+                            <li class="notification-item">
+                                <i class="bi bi-info-circle text-primary"></i>
+                                <div>
+                                    <h4>No Notifications</h4>
+                                    <p>Tidak ada notifikasi terbaru</p>
+                                </div>
+                            </li>
+                        @endif
+                        <br>
                     </ul><!-- End Notification Dropdown Items -->
                 </li><!-- End Notification Nav -->
 
@@ -184,8 +158,7 @@
                 </a>
             </li>
             <li class="nav-item @if (request()->routeIs('penetasan')) active @endif">
-                <a class="nav-link @if (!request()->routeIs('penetasan')) collapsed @endif"
-                    href="{{ route('penetasan') }}">
+                <a class="nav-link @if (!request()->routeIs('penetasan')) collapsed @endif" href="{{ route('penetasan') }}">
                     <i class="bi bi-egg"></i>
                     <span>Penetasan</span>
                 </a>
@@ -211,10 +184,6 @@
             &copy; Copyright <strong><span>Hatch Monitor</span></strong>. All Rights Reserved
         </div>
         <div class="credits">
-            <!-- All the links in the footer should remain intact. -->
-            <!-- You can delete the links only if you purchased the pro version. -->
-            <!-- Licensing information: https://bootstrapmade.com/license/ -->
-            <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
             Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
         </div>
     </footer><!-- End Footer -->
@@ -239,6 +208,30 @@
 
     {{-- Custom JS --}}
     @yield('js')
+    <script>
+        function redirectToPenetasan(id_penetasan) {
+            window.location.href = "{{ url('/penetasan') }}" + '/' + id_penetasan + '/harian';
+        }
+    </script>
+    {{-- Notif --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // Select all alert elements
+            const alerts = document.querySelectorAll('.alert');
+
+            // Set timeout to remove alerts after 10 seconds (10000 milliseconds)
+            alerts.forEach((alert) => {
+                setTimeout(() => {
+                    alert.classList.remove('show');
+                    alert.classList.add('fade');
+                    setTimeout(() => {
+                        alert.remove();
+                    }, 150); // Delay to allow fade out animation
+                }, 10000);
+            });
+        });
+    </script>
+
 
     {{-- Data Tables --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>

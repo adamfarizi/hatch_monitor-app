@@ -41,7 +41,12 @@
                             action="{{ url('/penetasan/' . $penetasan->id_penetasan . '/harian/index_create') }}">
                             @csrf
                             <div class="row">
+                                {{-- Webcam --}}
                                 <div id="my_camera" style="display: none;"></div>
+
+                                {{-- Espcam --}}
+                                {{-- <img id="espCamImage" src="http://192.168.88.140" alt="ESP-CAM Image"> --}}
+
                                 <div class="col-md-6">
                                     <input type="hidden" name="image" class="image-tag">
                                 </div>
@@ -63,9 +68,15 @@
                                     </td>
                                 </tr>
                                 <tr>
+                                    <td class="fw-semibold">Tanggal Akhir Scan</td>
+                                    <td>:</td>
+                                    <td>{{ \Carbon\Carbon::parse($penetasan->batas_scan)->locale('id')->translatedFormat('l, j F Y') }}
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td class="fw-semibold">Tanggal Selesai</td>
                                     <td>:</td>
-                                    <td>{{ \Carbon\Carbon::parse($penetasan->tanggal_selesai)->locale('id')->translatedFormat('l, j F Y (H:i)') }}
+                                    <td>{{ \Carbon\Carbon::parse($penetasan->tanggal_selesai)->locale('id')->translatedFormat('l, j F Y') }}
                                     </td>
                                 </tr>
                                 <tr>
@@ -299,6 +310,7 @@
         });
     </script> --}}
 
+    {{-- Webcam --}}
     <script language="JavaScript">
         Webcam.set({
             width: 450,
@@ -327,4 +339,42 @@
             });
         }
     </script>
+
+    {{-- ESP cam --}}
+    {{-- <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const imgElement = document.getElementById('espCamImage');
+
+            // Function to take screenshot
+            function takeScreenshot() {
+                // Use html2canvas to take a screenshot of the image element
+                html2canvas(imgElement).then(canvas => {
+                    // Convert the canvas to a data URL (base64 string)
+                    const imgData = canvas.toDataURL('image/png');
+
+                    // Get the div where the screenshot will be displayed
+                    const imageResultDiv = document.getElementById('imageResult');
+
+                    // Create an image element to display the screenshot
+                    const img = document.createElement('img');
+                    img.src = imgData;
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.objectFit = 'cover';
+
+                    // Clear the div and append the screenshot image
+                    imageResultDiv.innerHTML = '';
+                    imageResultDiv.appendChild(img);
+                }).catch(error => {
+                    console.error('Error taking screenshot:', error);
+                });
+            }
+
+            // Listen for the image to load
+            imgElement.addEventListener('load', function() {
+                // Take screenshot after the image has loaded
+                takeScreenshot();
+            });
+        });
+    </script> --}}
 @endsection

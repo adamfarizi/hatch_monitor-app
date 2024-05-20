@@ -30,7 +30,7 @@ class KontrolAlatController extends Controller
                 ->make(true);
         }
 
-        $link = "http://192.168.1.10";
+        $link = "http://192.168.88.140";
 
         return view('auth.kontrolalat.kontrolalat', [
             'suhu' => $suhu,

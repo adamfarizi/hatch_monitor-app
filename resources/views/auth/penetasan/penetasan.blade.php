@@ -166,12 +166,11 @@
                                         <td colspan="3">
                                             <p class="fw-semibold">Kondisi Terakhir</p>
                                             <div class="container mb-1" style="height: 50vh">
-                                                <div class="bg-dark h-100 text-center text-white"
-                                                    style="border-radius: 25px;">
-                                                    <p style="padding-top: 23vh">
-                                                        <i class="bi bi-exclamation-circle-fill"></i>
-                                                        <span>{{ $latestHarian->deskripsi }}</span>
-                                                    </p>
+                                                <div class="bg-secondary text-center text-white"
+                                                    style="border-radius: 25px; position: relative; overflow: hidden; width:400px;">
+                                                    <div style="width: 100%; height: 100%; object-fit: cover;">
+                                                        <img style="object-fit:cover;" src="{{ asset('images/scan/' . $latestHarian->bukti_harian) }}" alt="">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </td>
@@ -381,12 +380,8 @@
                         render: function(data, type, full, meta) {
                             var tanggal_selesai = moment(full.tanggal_selesai);
                             var formattedDate = tanggal_selesai.format('dddd, D MMMM YYYY');
-                            var formattedTime = tanggal_selesai.format('HH:mm');
                             return '<p class="mb-0">' +
                                 formattedDate +
-                                '</p>' +
-                                '<p class="mb-0">Jam: ' +
-                                formattedTime +
                                 '</p>';
                         }
                     },
