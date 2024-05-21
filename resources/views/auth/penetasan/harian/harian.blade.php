@@ -42,10 +42,7 @@
                             @csrf
                             <div class="row">
                                 {{-- Webcam --}}
-                                <div id="my_camera" style="display: none;"></div>
-
-                                {{-- Espcam --}}
-                                {{-- <img id="espCamImage" src="http://192.168.88.140" alt="ESP-CAM Image"> --}}
+                                {{-- <div id="my_camera" style="display: none;"></div> --}}
 
                                 <div class="col-md-6">
                                     <input type="hidden" name="image" class="image-tag">
@@ -114,6 +111,10 @@
                                 style="border-radius: 25px; position: relative; overflow: hidden; max-width:450px;">
                                 <div id="imageResult" onclick="window.location.reload()"
                                     style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;">
+                                    <div class="d-flex justify-content-center align-items-center h-100">
+                                        <div class="spinner-border text-light" role="status">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -187,7 +188,7 @@
                                         <div class="mb-1" style="max-height: 40vh; max-width: 450px;">
                                             @if ($harian->bukti_harian)
                                                 <img src="{{ asset('images/scan/' . $harian->bukti_harian) }}"
-                                                    class="img-fluid" alt="Bukti Harian" style="border-radius: 25px;">
+                                                    class="img-fluid" alt="Bukti Harian" style=" width: 100%; height: 40vh; object-fit: cover; border-radius: 25px;">
                                             @else
                                                 <div class="bg-secondary h-100 text-center text-white"
                                                     style="border-radius: 25px;">
@@ -271,7 +272,7 @@
     </script>
 
     {{-- Webcam --}}
-    <script language="JavaScript">
+    {{-- <script language="JavaScript">
         Webcam.set({
             width: 450,
             height: 280,
@@ -288,7 +289,7 @@
         function take_snapshot() {
             Webcam.snap(function(data_uri) {
                 $(".image-tag").val(data_uri);
-
+                console.log(data_uri);
                 const imageResult = document.getElementById('imageResult');
                 imageResult.innerHTML = '<img src="' + data_uri +
                     '" style="width: 100%; height: 100%; object-fit: cover;">';
@@ -298,43 +299,47 @@
                 document.getElementById('my_camera').style.display = 'none';
             });
         }
-    </script>
+    </script> --}}
 
     {{-- ESP cam --}}
-    {{-- <script>
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const imgElement = document.getElementById('espCamImage');
-
-            // Function to take screenshot
-            function takeScreenshot() {
-                // Use html2canvas to take a screenshot of the image element
-                html2canvas(imgElement).then(canvas => {
-                    // Convert the canvas to a data URL (base64 string)
-                    const imgData = canvas.toDataURL('image/png');
-
-                    // Get the div where the screenshot will be displayed
-                    const imageResultDiv = document.getElementById('imageResult');
-
-                    // Create an image element to display the screenshot
-                    const img = document.createElement('img');
-                    img.src = imgData;
-                    img.style.width = '100%';
-                    img.style.height = '100%';
-                    img.style.objectFit = 'cover';
-
-                    // Clear the div and append the screenshot image
-                    imageResultDiv.innerHTML = '';
-                    imageResultDiv.appendChild(img);
-                }).catch(error => {
-                    console.error('Error taking screenshot:', error);
-                });
-            }
-
-            // Listen for the image to load
-            imgElement.addEventListener('load', function() {
-                // Take screenshot after the image has loaded
-                takeScreenshot();
-            });
+            setTimeout(capturePhoto, 1000);
         });
-    </script> --}}
+
+        function capturePhoto() {
+            var link = '{{ $link }}';
+
+            fetch(`${link}/capture`)
+                .then(response => response.text())
+                .then(data => {
+                    setTimeout(() => {
+                        const imageUrl = `${link}/saved-photo`;
+                        fetchImageAsDataUri(imageUrl);
+                    }, 5000); // wait 5 seconds for the photo to be saved
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function fetchImageAsDataUri(imageUrl) {
+            fetch(imageUrl)
+                .then(response => response.blob())
+                .then(blob => {
+                    const reader = new FileReader();
+                    reader.onloadend = function() {
+                        const dataUri = reader.result;
+                        displayImage(dataUri);
+                        document.querySelector('.image-tag').value = dataUri;
+                    };
+                    reader.readAsDataURL(blob);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function displayImage(dataUri) {
+            const imageResult = document.getElementById('imageResult');
+            imageResult.innerHTML = '<img src="' + dataUri +
+                '" style="width: 100%; height: 100%; object-fit: cover;">';
+        }
+    </script>
 @endsection

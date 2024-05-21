@@ -64,10 +64,9 @@
                                         id="bukti_scan" name="bukti_scan" value="{{ $imagePath }}" readonly>
                                 </div>
                                 <div class="bg-secondary h-100 text-center text-white"
-                                    style="border-radius: 25px; position: relative; overflow: hidden; max-width:450px;">
-                                    <div style="width: 100%; height: 100%; object-fit: cover;">
-                                        <img src="{{ asset('images/scan/'.$imagePath) }}" alt="">
-                                    </div>
+                                    style="border-radius: 25px; position: relative; overflow: hidden; max-height: 40vh; max-width:450px;">
+                                    <img src="{{ asset('images/scan/' . $imagePath) }}"
+                                                    class="img-fluid" alt="Bukti Harian" style=" width: 100%; height: 40vh; object-fit: cover; border-radius: 25px;">
                                 </div>
                             </div>
                         </div>

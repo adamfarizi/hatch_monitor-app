@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Http;
 class HarianController extends Controller
 {
     public function index(Request $request, $id_penetasan)
-    {
+    { 
         $data['title'] = 'Cek Kondisi Harian';
 
         $harians = Harian::where('id_penetasan', $id_penetasan)
@@ -38,7 +38,7 @@ class HarianController extends Controller
         $penetasan = Penetasan::where('id_penetasan', $id_penetasan)
             ->first();
 
-        // Data Suhu
+        //* Data Suhu
         $channelId = '2476613';
         $apiKey = 'OB202AUVGT70OMR2';
         $field1 = 'field1';
@@ -54,7 +54,7 @@ class HarianController extends Controller
         $suhu = $latestData[$field1];
         $kelembaban = $latestData[$field2];
 
-        // Menyimpan gambar infertil
+        //* Menyimpan gambar infertil
         $img = $request->image;
         $folderPath = "images/scan/";
         $image_parts = explode(";base64,", $img);
@@ -67,7 +67,7 @@ class HarianController extends Controller
         $file = $folderPath . $fileName;
         file_put_contents($file, $image_base64);
 
-        // Cek tanggal scan
+        //* Cek tanggal scan
         $batas_scan = Carbon::parse($penetasan->batas_scan)->startOfDay();
         $today = Carbon::now()->startOfDay();
 
@@ -158,17 +158,17 @@ class HarianController extends Controller
             $today = Carbon::now()->startOfDay();
 
             if ($batas_scan->lt($today)) {
-                $prediksi_menetas = $penetasan->prediksi_menetas;
+                // $prediksi_menetas = $penetasan->prediksi_menetas;
 
             } elseif ($batas_scan->eq($today)) {
-                $prediksi_menetas = $penetasan->jumlah_telur - $request->input('jumlah_infertil');
+                // $prediksi_menetas = $penetasan->jumlah_telur - $request->input('jumlah_infertil');
 
             } else {
-                $prediksi_menetas = $penetasan->jumlah_telur - $request->input('jumlah_infertil');
+                // $prediksi_menetas = $penetasan->jumlah_telur - $request->input('jumlah_infertil');
 
             }
             Penetasan::where('id_penetasan', $id_penetasan)->update([
-                'prediksi_menetas' => $prediksi_menetas,
+                // 'prediksi_menetas' => $prediksi_menetas,
                 'total_menetas' => $penetasan->total_menetas + $request->input('menetas'),
                 'rata_rata_suhu' => $rata_rata_suhu,
                 'rata_rata_kelembaban' => $rata_rata_kelembaban,
@@ -323,7 +323,7 @@ class HarianController extends Controller
             $penetasan = Penetasan::where('id_penetasan', $id_penetasan)->first();
             Penetasan::where('id_penetasan', $id_penetasan)->update([
                 'total_menetas' => $penetasan->total_menetas - $harian->menetas,
-                'prediksi_menetas' => $penetasan->prediksi_menetas + $infertil->jumlah_infertil
+                // 'prediksi_menetas' => $penetasan->prediksi_menetas + $infertil->jumlah_infertil
             ]);
 
             $infertil->delete();

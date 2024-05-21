@@ -27,10 +27,12 @@ Route::middleware(['guest'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);
 
+    //* Beranda
     Route::get('/beranda', [BerandaController::class, 'index'])->name('beranda');
     Route::get('/beranda/grafik_penetasan', [PenetasanController::class, 'grafik'])->name('beranda.penetasan.grafik');
     Route::get('/beranda/grafik_suhu', [KontrolAlatController::class, 'grafik'])->name('beranda.suhu.grafik');
 
+    //* Penetasan
     Route::get('/penetasan', [PenetasanController::class, 'index'])->name('penetasan');
     Route::get('/penetasan/grafik', [PenetasanController::class, 'grafik'])->name('penetasan.grafik');
     Route::post('/penetasan/create', [PenetasanController::class, 'create']);
@@ -43,9 +45,11 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/penetasan/{id_penetasan}/harian/{id_harian}/edit', [HarianController::class, 'edit']);
     Route::delete('/penetasan/{id_penetasan}/harian/{id_harian}/delete', [HarianController::class, 'delete']);
 
+    //* Kontrol Alat
     Route::get('/kontrolalat', [KontrolAlatController::class, 'index'])->name('kontrolalat');
     Route::get('/kontrolalat/grafik', [KontrolAlatController::class, 'grafik'])->name('kontrolalat.grafik');
     
+    //* Profil
     Route::get('/profil/{id_peternak}', [ProfilController::class, 'index'])->name('profil');
     Route::put('/profil/{id_peternak}/edit', [ProfilController::class, 'edit']);
     Route::post('/profil/password', [ProfilController::class, 'changePassword']);

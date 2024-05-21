@@ -113,7 +113,7 @@
                         <div class="container mb-4" style="height: 50vh">
                             <div class="bg-dark h-100 text-center text-white live-preview-container"
                                 style="border-radius: 25px;">
-                                <img id="livePreviewImage" src="{{ $link }}" width="100%" height="100%"
+                                <img id="livePreviewImage" src="{{ $link2 }}" width="100%" height="100%"
                                     scrolling="no" style="border: none; border-radius: 25px; object-fit: cover;">
                                 <p id="connectionStatus" class="pt-5"
                                     style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
@@ -202,7 +202,7 @@
     </section>
 @endsection
 @section('js')
-    {{-- Kamera --}}
+    {{-- EspCam --}}
     <script>
         // Fungsi untuk memeriksa apakah gambar di URL tertentu dapat diakses
         function checkImage(url, callback) {
@@ -216,7 +216,7 @@
             img.src = url;
         }
 
-        var link = '{{ $link }}';
+        var link = '{{ $link2 }}';
 
         // Periksa apakah gambar di URL dapat diakses
         checkImage(link, function(isAccessible) {

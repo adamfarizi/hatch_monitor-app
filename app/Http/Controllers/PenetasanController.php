@@ -119,16 +119,16 @@ class PenetasanController extends Controller
                 $jumlah_infertil = Infertil::whereIn('id_harian', $id_harian)
                     ->sum('jumlah_infertil');
 
-                $prediksi_menetas = $jumlah_telur - $jumlah_infertil;
+                // $prediksi_menetas = $jumlah_telur - $jumlah_infertil;
             } else {
-                $prediksi_menetas = $jumlah_telur;
+                // $prediksi_menetas = $jumlah_telur;
             }
 
             Penetasan::where('id_penetasan', $id_penetasan)->update([
                 'tanggal_mulai' => $request->input('tanggal_mulai'),
                 'tanggal_selesai' => $tanggal_selesai,
                 'batas_scan' => $batas_scan,
-                'prediksi_menetas' => $prediksi_menetas,
+                // 'prediksi_menetas' => $prediksi_menetas,
                 'jumlah_telur' => $jumlah_telur,
             ]);
 
