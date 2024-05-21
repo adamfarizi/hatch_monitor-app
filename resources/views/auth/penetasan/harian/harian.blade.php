@@ -308,7 +308,7 @@
         });
 
         function capturePhoto() {
-            var link = '{{ $link }}';
+            var link = '{{ $link1 }}';
 
             fetch(`${link}/capture`)
                 .then(response => response.text())
