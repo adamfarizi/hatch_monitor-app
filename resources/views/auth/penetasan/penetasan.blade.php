@@ -166,11 +166,9 @@
                                         <td colspan="3">
                                             <p class="fw-semibold">Kondisi Terakhir</p>
                                             <div class="container mb-1" style="height: 50vh">
-                                                <div class="bg-secondary text-center text-white"
+                                                <div class="bg-dark text-center text-white"
                                                     style="border-radius: 25px; position: relative; overflow: hidden; width:400px;">
-                                                    <div style="width: 100%; height: 100%; object-fit: cover;">
-                                                        <img style="object-fit:cover;" src="{{ asset('images/scan/' . $latestHarian->bukti_harian) }}" alt="">
-                                                    </div>
+                                                    <img style="width: 100%; height: 100%; object-fit:cover;" src="{{ asset('images/scan/' . $latestHarian->bukti_harian) }}" alt="">
                                                 </div>
                                             </div>
                                         </td>
@@ -180,7 +178,7 @@
                                         <td colspan="3">
                                             <p class="fw-semibold">Kondisi Terakhir</p>
                                             <div class="container mb-1" style="height: 50vh">
-                                                <div class="bg-secondary h-100 text-center text-white"
+                                                <div class="bg-dark h-100 text-center text-white"
                                                     style="border-radius: 25px;">
                                                     <p style="padding-top: 23vh">
                                                         <i class="bi bi-exclamation-circle-fill"></i>

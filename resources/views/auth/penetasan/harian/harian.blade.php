@@ -34,9 +34,11 @@
         @endif
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title row">
-                    <div class="col">Data Kondisi Harian Telur</div>
-                    <div class="col text-end">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="card-title">
+                        Data Kondisi Harian Telur
+                    </h5>
+                    <div class="filter">
                         <form method="POST"
                             action="{{ url('/penetasan/' . $penetasan->id_penetasan . '/harian/index_create') }}">
                             @csrf
@@ -53,8 +55,8 @@
                             </button>
                         </form>
                     </div>
-                </h5>
-                <div class="d-flex flex-column flex-lg-row mb-3">
+                </div>
+                <div class="d-flex flex-column flex-lg-row mb-5 pb-3">
                     <div class="col-12 col-lg-6">
                         <table class="table table-borderless">
                             <tbody>
@@ -107,9 +109,9 @@
                     <div class="col-12 col-lg-6">
                         <div id="container" class="container mb-1">
                             <p class="fw-semibold">Hasil Capture <span class="ms-5 fw-normal">:</span></p>
-                            <div id="imageWrapper" class="bg-secondary h-100 text-center text-white"
+                            <div id="imageWrapper" class="bg-dark h-100 text-center text-white"
                                 style="border-radius: 25px; position: relative; overflow: hidden; max-width:450px;">
-                                <div id="imageResult" onclick="window.location.reload()"
+                                <div id="imageResult"
                                     style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;">
                                     <div class="d-flex justify-content-center align-items-center h-100">
                                         <div class="spinner-border text-light" role="status">
@@ -117,6 +119,9 @@
                                     </div>
                                 </div>
                             </div>
+                            <button type="button" onclick="window.location.reload()" class="btn btn-primary mt-3 w-100" style="max-width:450px;">
+                                <i class="bi bi-plus-lg me-1"></i> Ambil Gambar
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -188,9 +193,10 @@
                                         <div class="mb-1" style="max-height: 40vh; max-width: 450px;">
                                             @if ($harian->bukti_harian)
                                                 <img src="{{ asset('images/scan/' . $harian->bukti_harian) }}"
-                                                    class="img-fluid" alt="Bukti Harian" style=" width: 100%; height: 40vh; object-fit: cover; border-radius: 25px;">
+                                                    class="img-fluid" alt="Bukti Harian"
+                                                    style=" width: 100%; height: 40vh; object-fit: cover; border-radius: 25px;">
                                             @else
-                                                <div class="bg-secondary h-100 text-center text-white"
+                                                <div class="bg-dark h-100 text-center text-white"
                                                     style="border-radius: 25px;">
                                                     <p style="padding-top: 18vh; padding-bottom: 18vh;">
                                                         <i class="bi bi-exclamation-circle-fill"></i>
@@ -307,9 +313,9 @@
             setTimeout(capturePhoto, 1000);
         });
 
-        function capturePhoto() {
-            var link = '{{ $link1 }}';
+        var link = '{{ $link1 }}';
 
+        function capturePhoto() {
             fetch(`${link}/capture`)
                 .then(response => response.text())
                 .then(data => {

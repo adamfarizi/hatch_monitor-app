@@ -56,6 +56,10 @@ class HarianController extends Controller
 
         //* Menyimpan gambar infertil
         $img = $request->image;
+        if (!$img) {
+            // Jika tidak ada gambar yang diunggah
+            return redirect()->back()->withErrors(['error' => 'Gambar tidak ada!']);
+        }
         $folderPath = "images/scan/";
         $image_parts = explode(";base64,", $img);
         $image_type_aux = explode("image/", $image_parts[0]);
