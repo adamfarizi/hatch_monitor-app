@@ -107,20 +107,20 @@
                         </table>
                     </div>
                     <div class="col-12 col-lg-6">
-                        <div id="container" class="container mb-1">
+                        <div id="container" class="container mb-1" style="height: 84%;">
                             <p class="fw-semibold">Hasil Capture <span class="ms-5 fw-normal">:</span></p>
                             <div id="imageWrapper" class="bg-dark h-100 text-center text-white"
                                 style="border-radius: 25px; position: relative; overflow: hidden; max-width:450px;">
-                                <div id="imageResult"
-                                    style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;">
+                                <div id="imageResult" style="width: 100%; height: 100%; object-fit: cover;">
                                     <div class="d-flex justify-content-center align-items-center h-100">
-                                        <div class="spinner-border text-light" role="status">
+                                        <div id="loading" class="spinner-border text-light" role="status">
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <button type="button" onclick="window.location.reload()" class="btn btn-primary mt-3 w-100" style="max-width:450px;">
-                                <i class="bi bi-plus-lg me-1"></i> Ambil Gambar
+                            <button type="button" onclick="window.location.reload()" class="btn btn-primary mt-3 w-100"
+                                style="max-width:450px;">
+                                <i class="bi bi-camera-fill me-1"></i> Ambil Gambar
                             </button>
                         </div>
                     </div>
@@ -253,6 +253,7 @@
     @endforeach
 @endsection
 @section('js')
+    {{-- ESP Cam Style --}}
     <script>
         window.onload = function() {
             adjustContainerHeight();
@@ -268,6 +269,7 @@
             var screenWidth = window.innerWidth;
 
             if (screenWidth <= 576) {
+                container.style.height = "";
                 container.style.maxHeight = "40vh";
                 imageWrapper.style.maxHeight = "40vh";
             } else {
@@ -307,10 +309,10 @@
         }
     </script> --}}
 
-    {{-- ESP cam --}}
+    {{-- ESP Cam --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(capturePhoto, 1000);
+            capturePhoto();
         });
 
         var link = '{{ $link1 }}';

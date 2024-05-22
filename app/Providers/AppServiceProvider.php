@@ -23,8 +23,13 @@ class AppServiceProvider extends ServiceProvider
         //* Link esp32cam 
 
         View::share([
-            'link1' => 'http://10.10.10.121',
-            'link2' => 'http://10.10.10.121',
+            //! Wifi Hotspot Area 
+            // 'link1' => 'http://10.10.10.100',
+            // 'link2' => 'http://10.10.10.100/saved-photo',
+
+            //! Wifi Lainnya 
+            'link1' => 'http://192.168.1.150',
+            'link2' => 'http://192.168.1.150/saved-photo',
         ]);
     }
 }

@@ -48,6 +48,7 @@ Route::middleware(['auth'])->group(function () {
     //* Kontrol Alat
     Route::get('/kontrolalat', [KontrolAlatController::class, 'index'])->name('kontrolalat');
     Route::get('/kontrolalat/grafik', [KontrolAlatController::class, 'grafik'])->name('kontrolalat.grafik');
+    Route::post('/kontrolRelay', [KontrolAlatController::class, 'kontrolRelay']);
     
     //* Profil
     Route::get('/profil/{id_peternak}', [ProfilController::class, 'index'])->name('profil');

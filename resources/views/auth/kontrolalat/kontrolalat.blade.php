@@ -119,11 +119,22 @@
                                     style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
                                     <span><i class="ri-information-line"></i></span>Kamera tidak tersambung
                                 </p>
+                                @if (session('status'))
+                                    <div class="alert alert-info bg-primary text-light border-0 alert-dismissible fade show"
+                                        role="alert"
+                                        style="position: absolute; z-index: 9999; top: 30%; left: 50%; transform: translate(-50%, -50%);">
+                                        <i class="ri-information-line"></i>
+                                        <b>Status ! </b> {{ session('status') }}
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            {{ $nyoh }}
             {{-- Button --}}
             <div class="col-xxl-4 col-md-6">
                 <div class="card">
@@ -133,31 +144,49 @@
                                 Kontrol Alat
                             </div>
                         </h5>
-                        <div class="container">
-                            {{-- <div class="py-1">
-                                <p class="small text-muted">Lampu 1</p>
-                                <div class="d-grid gap-2">
-                                    <button class="btn btn-primary btn-lg" type="button">ON</button>
+                        <div class="container" style="height:53vh">
+                            <p class="small text-muted"><i class="ri-information-line"></i> Perubahan kondisi terkadang mengalami keterlambatan karena jaringan</p>
+                            <form method="POST" action="{{ url('/kontrolRelay') }}">
+                                @csrf
+                                <div class="py-2">
+                                    <p class="small">Lampu LED (Relay 1)
+                                        <span>
+                                            @if ($relay1 === 'On')
+                                                <span class="badge rounded-pill bg-primary">On</span>
+                                            @elseif ($relay1 === 'Off')
+                                                <span class="badge rounded-pill bg-danger">Off</span>
+                                            @else
+                                                <span class="badge rounded-pill bg-secondary">Unknown</span>
+                                            @endif
+                                        </span>
+                                    </p>
+                                    <div class="d-grid gap-2">
+                                        <button class="btn btn-primary btn-lg" type="submit" name="relay"
+                                            value="relay1_on">ON</button>
+                                        <button class="btn btn-danger btn-lg" type="submit" name="relay"
+                                            value="relay1_off">OFF</button>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="py-1">
-                                <p class="small text-muted">Lampu 2</p>
-                                <div class="d-grid gap-2">
-                                    <button class="btn btn-primary btn-lg" type="button">ON</button>
+                                <div class="py-2">
+                                    <p class="small">Kipas (Relay 2) 
+                                        <span>
+                                            @if ($relay2 === 'On')
+                                                <span class="badge rounded-pill bg-primary">On</span>
+                                            @elseif ($relay2 === 'Off')
+                                                <span class="badge rounded-pill bg-danger">Off</span>
+                                            @else
+                                                <span class="badge rounded-pill bg-secondary">Unknown</span>
+                                            @endif
+                                        </span>
+                                    </p>                                    
+                                    <div class="d-grid gap-2">
+                                        <button class="btn btn-primary btn-lg" type="submit" name="relay"
+                                            value="relay2_on">ON</button>
+                                        <button class="btn btn-danger btn-lg" type="submit" name="relay"
+                                            value="relay2_off">OFF</button>
+                                    </div>
                                 </div>
-                            </div> --}}
-                            <div class="py-1">
-                                <p class="small text-muted">Lampu LED</p>
-                                <div class="d-grid gap-2">
-                                    <button class="btn btn-primary btn-lg" type="button">ON</button>
-                                </div>
-                            </div>
-                            <div class="py-1">
-                                <p class="small text-muted">Kipas</p>
-                                <div class="d-grid gap-2">
-                                    <button class="btn btn-primary btn-lg" type="button">ON</button>
-                                </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -304,7 +333,7 @@
                         type: 'datetime',
                         categories: data.categories,
                         labels: {
-                            datetimeUTC:false,
+                            datetimeUTC: false,
                         }
                     },
                     tooltip: {
