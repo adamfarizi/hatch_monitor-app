@@ -134,7 +134,6 @@
                     </div>
                 </div>
             </div>
-            {{ $nyoh }}
             {{-- Button --}}
             <div class="col-xxl-4 col-md-6">
                 <div class="card">
