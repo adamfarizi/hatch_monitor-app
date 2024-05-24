@@ -144,7 +144,8 @@
                             </div>
                         </h5>
                         <div class="container" style="height:53vh">
-                            <p class="small text-muted"><i class="ri-information-line"></i> Perubahan kondisi terkadang mengalami keterlambatan karena jaringan</p>
+                            <p class="small text-muted"><i class="ri-information-line"></i> Perubahan kondisi terkadang
+                                mengalami keterlambatan karena jaringan</p>
                             <form method="POST" action="{{ url('/kontrolRelay') }}">
                                 @csrf
                                 <div class="py-2">
@@ -167,7 +168,7 @@
                                     </div>
                                 </div>
                                 <div class="py-2">
-                                    <p class="small">Kipas (Relay 2) 
+                                    <p class="small">Kipas (Relay 2)
                                         <span>
                                             @if ($relay2 === 'On')
                                                 <span class="badge rounded-pill bg-primary">On</span>
@@ -177,7 +178,7 @@
                                                 <span class="badge rounded-pill bg-secondary">Unknown</span>
                                             @endif
                                         </span>
-                                    </p>                                    
+                                    </p>
                                     <div class="d-grid gap-2">
                                         <button class="btn btn-primary btn-lg" type="submit" name="relay"
                                             value="relay2_on">ON</button>
