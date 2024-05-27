@@ -85,10 +85,10 @@
                                     <i class="bi bi-exclamation-circle text-warning"></i>
                                     <div>
                                         <h4>Pemberitahuan Sistem !</h4>
-                                        <p>Penetasan tanggal
-                                            {{ date('d/m/Y', strtotime($notification->tanggal_mulai)) }} sudah memasuki
-                                            hari
-                                            ke-10. Telur yang tidak memiliki fertil harap dikeluarkan dari alat!</p>
+                                        <p>Penetasan yang dimulai pada tanggal
+                                            {{ date('d/m/Y', strtotime($notification->tanggal_mulai)) }} telah mencapai
+                                            hari ke-10. Telur yang tidak mengalami pembuahan dapat anda keluarkan dari
+                                            alat, atau tetap melanjutkan proses penetasan sampai selesai.</p>
                                         <p>{{ \Carbon\Carbon::parse($notification->batas_scan)->diffForHumans() }}</p>
                                     </div>
                                 </li>

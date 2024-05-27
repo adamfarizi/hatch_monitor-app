@@ -171,10 +171,10 @@
                                                 @foreach ($harian->infertil as $infertil)
                                                     <tr>
                                                         <td colspan="3">
-                                                            <p class="fw-semibold mb-0">Infertil</p>
+                                                            <p class="fw-semibold mb-0">Scan</p>
                                                             <ul>
                                                                 {{-- <li>Nomor Telur : A1, B2, B3</li> --}}
-                                                                <li>Jumlah : {{ $infertil->jumlah_infertil }} telur</li>
+                                                                <li>Jumlah Infertil : {{ $infertil->jumlah_infertil }} telur</li>
                                                                 <li>
                                                                     <a class="" href="#"
                                                                         data-bs-toggle="modal"
