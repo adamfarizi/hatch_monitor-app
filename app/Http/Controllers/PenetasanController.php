@@ -37,10 +37,10 @@ class PenetasanController extends Controller
     public function grafik(Request $request)
     {
         // Menghitung tanggal satu minggu yang lalu
-        $tanggalSatuMingguYangLalu = Carbon::now()->subMonths(3)->format('Y-m-d H:i:s');
+        $BatasTanggal = Carbon::now()->subMonths(3)->format('Y-m-d H:i:s');
 
         // Mengambil data monitor dalam rentang waktu satu minggu terakhir
-        $data = Penetasan::where('tanggal_mulai', '>', $tanggalSatuMingguYangLalu)
+        $data = Penetasan::where('tanggal_mulai', '>', $BatasTanggal)
             ->orderBy('tanggal_mulai')
             ->get();
 
