@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Http;
 class HarianController extends Controller
 {
     public function index(Request $request, $id_penetasan)
-    { 
+    {
         $data['title'] = 'Cek Kondisi Harian';
 
         $harians = Harian::where('id_penetasan', $id_penetasan)
@@ -60,15 +60,15 @@ class HarianController extends Controller
             // Jika tidak ada gambar yang diunggah
             return redirect()->back()->withErrors(['error' => 'Gambar tidak ada!']);
         }
-        $folderPath = "images/scan/";
+        $folderPath = "images/capture/";
         $image_parts = explode(";base64,", $img);
         $image_type_aux = explode("image/", $image_parts[0]);
         $image_type = $image_type_aux[1];
         $image_base64 = base64_decode($image_parts[1]);
         $timestamp = time();
         $dateTime = date('H-i_d-m-Y', $timestamp);
-        $fileName = $dateTime . '.png';
-        $file = $folderPath . $fileName;
+        $captureFileName = $dateTime . '.png';
+        $file = $folderPath . $captureFileName;
         file_put_contents($file, $image_base64);
 
         //* Cek tanggal scan
@@ -76,37 +76,102 @@ class HarianController extends Controller
         $today = Carbon::now()->startOfDay();
 
         if ($batas_scan->lt($today)) {
-            $infertil = 0;
+            $infertilCount = 0;
+            $fertilCount = 0;
+            $scanFileName = null;
 
         } elseif ($batas_scan->eq($today)) {
-            // Mengirim gambar ke endpoint Flask
+            //* Mengirim gambar ke endpoint Flask
             $response = Http::attach(
                 'image',
                 file_get_contents(public_path($file)),
-                $fileName
+                $captureFileName
             )->post('http://localhost:8500/detect-objects');
 
-            $infertil = intval($response->json());
+            $responseData = $response->json();
+
+            //* Mengambil data fertil dan infertil
+            $infertilCount = 0;
+            $fertilCount = 0;
+
+            foreach ($responseData['predictions'] as $prediction) {
+                if ($prediction['class'] === 'infertil') {
+                    $infertilCount++;
+                } elseif ($prediction['class'] === 'fertil') {
+                    $fertilCount++;
+                }
+            }
+
+            //* Memindahkan gambar hasil scan YOLO ke folder public/images/scan
+            $sourceFolder = base_path('yolov5/runs/detect/');
+            $destinationFolder = public_path('images/scan/');
+            $latestExp = $this->getLatestExpFolder($sourceFolder);
+
+            if ($latestExp) {
+                $imageFiles = glob($latestExp . '/*.jpg'); // Hanya memindahkan file gambar PNG
+                foreach ($imageFiles as $image) {
+                    $scanFileName = date('H-i_d-m-Y', time()) . '.png';
+                    copy($image, $destinationFolder . '/' . $scanFileName);
+                }
+            }
 
         } else {
-            // Mengirim gambar ke endpoint Flask
+            //* Mengirim gambar ke endpoint Flask
             $response = Http::attach(
                 'image',
                 file_get_contents(public_path($file)),
-                $fileName
+                $captureFileName
             )->post('http://localhost:8500/detect-objects');
 
-            $infertil = intval($response->json());
+            $responseData = $response->json();
+
+            //* Mengambil data fertil dan infertil
+            $infertilCount = 0;
+            $fertilCount = 0;
+
+            foreach ($responseData['predictions'] as $prediction) {
+                if ($prediction['class'] === 'infertil') {
+                    $infertilCount++;
+                } elseif ($prediction['class'] === 'fertil') {
+                    $fertilCount++;
+                }
+            }
+
+            //* Memindahkan gambar hasil scan YOLO ke folder public/images/scan
+            $sourceFolder = base_path('yolov5/runs/detect/');
+            $destinationFolder = public_path('images/scan/');
+            $latestExp = $this->getLatestExpFolder($sourceFolder);
+
+            if ($latestExp) {
+                $imageFiles = glob($latestExp . '/*.jpg'); // Hanya memindahkan file gambar PNG
+                foreach ($imageFiles as $image) {
+                    $scanFileName = date('H-i_d-m-Y', time()) . '.png';
+                    copy($image, $destinationFolder . '/' . $scanFileName);
+                }
+            }
 
         }
+
 
         return view('auth.penetasan.harian.create.create', [
             'penetasan' => $penetasan,
             'suhu' => $suhu,
             'kelembaban' => $kelembaban,
-            'infertil' => $infertil,
-            'imagePath' => $fileName,
+            'infertil' => $infertilCount,
+            'imageCapture' => $captureFileName,
+            'imageScan' => $scanFileName,
         ], $data);
+    }
+
+    private function getLatestExpFolder($sourceFolder)
+    {
+        //* Untuk mencari folder terakhir di exp
+        $folders = glob($sourceFolder . 'exp*', GLOB_ONLYDIR);
+        usort($folders, function ($a, $b) {
+            return filemtime($b) - filemtime($a);
+        });
+
+        return $folders[0] ?? null;
     }
 
     public function create(Request $request, $id_penetasan)
@@ -123,7 +188,7 @@ class HarianController extends Controller
                 'kelembaban_scan' => 'required_if:kelembaban_radio,scan',
                 'kelembaban_manual' => 'required_if:kelembaban_radio,manual',
                 'jumlah_infertil' => 'required',
-                'bukti_scan' => 'required',
+                'bukti_capture' => 'required',
             ]);
 
             // Tentukan nilai suhu berdasarkan pilihan radio
@@ -141,15 +206,17 @@ class HarianController extends Controller
                 'suhu_harian' => $suhu,
                 'kelembaban_harian' => $kelembaban,
                 'deskripsi' => $deskripsi,
-                'bukti_harian' => $request->input('bukti_scan'),
+                'bukti_harian' => $request->input('bukti_capture'),
             ]);
+
+            $bukti_infertil = $request->input('bukti_scan') ?? $request->input('bukti_capture');
 
             $infertil = Infertil::create([
                 'id_harian' => $harian->id_harian,
                 'waktu_infertil' => $request->input('waktu_harian'),
                 'nomor_telur' => null,
                 'jumlah_infertil' => $request->input('jumlah_infertil'),
-                'bukti_infertil' => $request->input('bukti_scan'),
+                'bukti_infertil' => $bukti_infertil,
             ]);
 
             $rata_rata_suhu = Harian::where('id_penetasan', $id_penetasan)->avg('suhu_harian');
@@ -320,8 +387,12 @@ class HarianController extends Controller
             }
 
             // Hapus gambar jika ada
-            if (File::exists('images/scan/' . $harian->bukti_harian)) {
-                File::delete('images/scan/' . $harian->bukti_harian);
+            if (File::exists('images/capture/' . $harian->bukti_harian)) {
+                File::delete('images/capture/' . $harian->bukti_harian);
+            }
+
+            if (File::exists('images/scan/' . $infertil->bukti_infertil)) {
+                File::delete('images/scan/' . $infertil->bukti_infertil);
             }
 
             $penetasan = Penetasan::where('id_penetasan', $id_penetasan)->first();

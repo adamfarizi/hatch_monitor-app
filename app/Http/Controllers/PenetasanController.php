@@ -146,13 +146,20 @@ class PenetasanController extends Controller
     {
         try {
             $id_harian_penetasan = Harian::where('id_penetasan', $id_penetasan)->pluck('id_harian');
-            $infertil = Infertil::whereIn('id_harian', $id_harian_penetasan)->delete();
+            $infertilList = Infertil::whereIn('id_harian', $id_harian_penetasan)->get();
             $harianList = Harian::where('id_penetasan', $id_penetasan)->get();
 
             // Hapus gambar jika ada dan hapus data Harian
+            foreach ($infertilList as $infertil) {
+                if (File::exists(public_path('images/scan/' . $infertil->bukti_infertil))) {
+                    File::delete(public_path('images/scan/' . $infertil->bukti_infertil));
+                }
+                $infertil->delete();
+            }
+
             foreach ($harianList as $harian) {
-                if (File::exists(public_path('images/scan/' . $harian->bukti_harian))) {
-                    File::delete(public_path('images/scan/' . $harian->bukti_harian));
+                if (File::exists(public_path('images/capture/' . $harian->bukti_harian))) {
+                    File::delete(public_path('images/capture/' . $harian->bukti_harian));
                 }
                 $harian->delete();
             }

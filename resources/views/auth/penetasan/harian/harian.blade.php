@@ -44,7 +44,7 @@
                             @csrf
                             <div class="row">
                                 {{-- Webcam --}}
-                                {{-- <div id="my_camera" style="display: none;"></div> --}}
+                                <div id="my_camera" style="display: none;"></div>
 
                                 <div class="col-md-6">
                                     <input type="hidden" name="image" class="image-tag">
@@ -174,7 +174,14 @@
                                                             <p class="fw-semibold mb-0">Infertil</p>
                                                             <ul>
                                                                 {{-- <li>Nomor Telur : A1, B2, B3</li> --}}
-                                                                <li>Jumlah : {{ $infertil->jumlah_infertil }}</li>
+                                                                <li>Jumlah : {{ $infertil->jumlah_infertil }} telur</li>
+                                                                <li>
+                                                                    <a class="" href="#"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#buktiScan{{ $harian->id_harian }}">
+                                                                        <i class="bi bi-camera-fill me-1"></i>Bukti
+                                                                        scan</a>
+                                                                </li>
                                                             </ul>
                                                         </td>
                                                     </tr>
@@ -192,7 +199,7 @@
                                         <p class="fw-semibold">Bukti Capture <span class="ms-5 fw-normal">:</span></p>
                                         <div class="mb-1" style="max-height: 40vh; max-width: 450px;">
                                             @if ($harian->bukti_harian)
-                                                <img src="{{ asset('images/scan/' . $harian->bukti_harian) }}"
+                                                <img src="{{ asset('images/capture/' . $harian->bukti_harian) }}"
                                                     class="img-fluid" alt="Bukti Harian"
                                                     style=" width: 100%; height: 40vh; object-fit: cover; border-radius: 25px;">
                                             @else
@@ -251,6 +258,42 @@
             </div>
         </div>
     @endforeach
+
+    {{-- Modal Bukti Scan --}}
+    @foreach ($harians as $harian)
+        <div class="modal fade" id="buktiScan{{ $harian->id_harian }}" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold" style="color: #012970;">Bukti Scan</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        @foreach ($harian->infertil as $infertil)
+                            <div class="bg-dark h-100 text-center text-white"
+                                style="border-radius: 25px; position: relative; overflow: hidden; max-height: 40vh; max-width:450px;">
+                                @php
+                                    $scanPath = public_path('images/scan/' . $infertil->bukti_infertil);
+                                    $capturePath = asset('images/capture/' . $infertil->bukti_infertil);
+                                    $imageUrl = file_exists($scanPath)
+                                        ? asset('images/scan/' . $infertil->bukti_infertil)
+                                        : $capturePath;
+                                @endphp
+                                <div class="bg-dark h-100 text-center text-white"
+                                    style="border-radius: 25px; position: relative; overflow: hidden; max-height: 40vh; max-width:450px;">
+                                    <img src="{{ $imageUrl }}" class="img-fluid" alt="Bukti Harian"
+                                        style="width: 100%; height: 40vh; object-fit: cover; border-radius: 25px;">
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kembali</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endforeach
 @endsection
 @section('js')
     {{-- ESP Cam Style --}}
@@ -280,7 +323,7 @@
     </script>
 
     {{-- Webcam --}}
-    {{-- <script language="JavaScript">
+    <script language="JavaScript">
         Webcam.set({
             width: 450,
             height: 280,
@@ -297,7 +340,6 @@
         function take_snapshot() {
             Webcam.snap(function(data_uri) {
                 $(".image-tag").val(data_uri);
-                console.log(data_uri);
                 const imageResult = document.getElementById('imageResult');
                 imageResult.innerHTML = '<img src="' + data_uri +
                     '" style="width: 100%; height: 100%; object-fit: cover;">';
@@ -307,10 +349,10 @@
                 document.getElementById('my_camera').style.display = 'none';
             });
         }
-    </script> --}}
+    </script>
 
     {{-- ESP Cam --}}
-    <script>
+    {{-- <script>
         document.addEventListener('DOMContentLoaded', function() {
             capturePhoto();
         });
@@ -349,5 +391,5 @@
             imageResult.innerHTML = '<img src="' + dataUri +
                 '" style="width: 100%; height: 100%; object-fit: cover;">';
         }
-    </script>
+    </script> --}}
 @endsection

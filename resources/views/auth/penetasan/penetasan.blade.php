@@ -168,7 +168,9 @@
                                             <div class="container mb-1" style="height: 50vh">
                                                 <div class="bg-dark text-center text-white"
                                                     style="border-radius: 25px; position: relative; overflow: hidden; width:400px;">
-                                                    <img style="width: 100%; height: 100%; object-fit:cover;" src="{{ asset('images/scan/' . $latestHarian->bukti_harian) }}" alt="">
+                                                    <img style="width: 100%; height: 100%; object-fit:cover;"
+                                                        src="{{ asset('images/capture/' . $latestHarian->bukti_harian) }}"
+                                                        alt="">
                                                 </div>
                                             </div>
                                         </td>

@@ -61,12 +61,23 @@
                             <div class="container mb-3" style="max-height: 40vh">
                                 <div class="col input-group">
                                     <input type="hidden" class="form-control" aria-describedby="basic-addon2"
-                                        id="bukti_scan" name="bukti_scan" value="{{ $imagePath }}" readonly>
+                                        id="bukti_scan" name="bukti_capture" value="{{ $imageCapture }}" readonly>
+                                </div>
+                                <div class="col input-group">
+                                    <input type="hidden" class="form-control" aria-describedby="basic-addon2"
+                                        id="bukti_scan" name="bukti_scan" value="{{ $imageScan }}" readonly>
                                 </div>
                                 <div class="bg-dark h-100 text-center text-white"
                                     style="border-radius: 25px; position: relative; overflow: hidden; max-height: 40vh; max-width:450px;">
-                                    <img src="{{ asset('images/scan/' . $imagePath) }}"
-                                                    class="img-fluid" alt="Bukti Harian" style=" width: 100%; height: 40vh; object-fit: cover; border-radius: 25px;">
+                                    @if ($imageScan)
+                                        <img src="{{ asset('images/scan/' . $imageScan) }}" class="img-fluid"
+                                            alt="Bukti Harian"
+                                            style="width: 100%; height: 40vh; object-fit: cover; border-radius: 25px;">
+                                    @else
+                                        <img src="{{ asset('images/capture/' . $imageCapture) }}" class="img-fluid"
+                                            alt="Bukti Harian"
+                                            style="width: 100%; height: 40vh; object-fit: cover; border-radius: 25px;">
+                                    @endif
                                 </div>
                             </div>
                         </div>
