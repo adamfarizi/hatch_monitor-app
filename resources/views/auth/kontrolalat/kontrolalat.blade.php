@@ -146,11 +146,69 @@
                         <div class="container" style="height:53vh">
                             <p class="small text-muted"><i class="ri-information-line"></i> Perubahan kondisi terkadang
                                 mengalami keterlambatan karena jaringan</p>
+                            <p class="small text-muted"><i class="ri-information-line"></i> Jika status button sudah berubah
+                                namun kondisi lampu belum berubah, maka reload halaman atau tekan kembali button</p>
+                            {{-- 1 Button --}}
                             <form method="POST" action="{{ url('/kontrolRelay') }}">
                                 @csrf
+                                <div class="py-2 mb-4">
+                                    <p class="small">Lampu LED
+                                        <span class="ms-2">
+                                            @if ($relay1 === 'On')
+                                                <span class="badge rounded-pill bg-primary">On</span>
+                                            @elseif ($relay1 === 'Off')
+                                                <span class="badge rounded-pill bg-danger">Off</span>
+                                            @else
+                                                <span class="badge rounded-pill bg-secondary">Unknown</span>
+                                            @endif
+                                        </span>
+                                    </p>
+                                    <div class="d-grid gap-2">
+                                        @if ($relay1 === 'On')
+                                            <button class="btn btn-danger btn-lg" type="submit" name="relay"
+                                                value="relay1_off">OFF</button>
+                                        @elseif ($relay1 === 'Off')
+                                            <button class="btn btn-primary btn-lg" type="submit" name="relay"
+                                                value="relay1_on">ON</button>
+                                        @else
+                                            <button class="btn btn-secondary btn-lg" type="button"
+                                                onclick="window.location.reload()">RELOAD</button>
+                                        @endif
+                                    </div>
+                                </div>
                                 <div class="py-2">
-                                    <p class="small">Lampu LED (Relay 1)
-                                        <span>
+                                    <p class="small">Lampu Bohlam
+                                        <span class="ms-2">
+                                            @if ($relay2 === 'On')
+                                                <span class="badge rounded-pill bg-primary">On</span>
+                                            @elseif ($relay2 === 'Off')
+                                                <span class="badge rounded-pill bg-danger">Off</span>
+                                            @else
+                                                <span class="badge rounded-pill bg-secondary">Unknown</span>
+                                            @endif
+                                        </span>
+                                    </p>
+                                    <div class="d-grid gap-2">
+                                        @if ($relay2 === 'On')
+                                            <button class="btn btn-danger btn-lg" type="submit" name="relay"
+                                                value="relay2_off">OFF</button>
+                                        @elseif ($relay2 === 'Off')
+                                            <button class="btn btn-primary btn-lg" type="submit" name="relay"
+                                                value="relay2_on">ON</button>
+                                        @else
+                                            <button class="btn btn-secondary btn-lg" type="button"
+                                                onclick="window.location.reload()">RELOAD</button>
+                                        @endif
+                                    </div>
+                                </div>
+                            </form>
+
+                            {{-- 2 Button --}}
+                            {{-- <form method="POST" action="{{ url('/kontrolRelay') }}">
+                                @csrf
+                                <div class="py-2">
+                                    <p class="small">Lampu LED
+                                        <span class="ms-2">
                                             @if ($relay1 === 'On')
                                                 <span class="badge rounded-pill bg-primary">On</span>
                                             @elseif ($relay1 === 'Off')
@@ -168,8 +226,8 @@
                                     </div>
                                 </div>
                                 <div class="py-2">
-                                    <p class="small">Kipas (Relay 2)
-                                        <span>
+                                    <p class="small">Lampu Bohlam
+                                        <span class="ms-2">
                                             @if ($relay2 === 'On')
                                                 <span class="badge rounded-pill bg-primary">On</span>
                                             @elseif ($relay2 === 'Off')
@@ -186,7 +244,7 @@
                                             value="relay2_off">OFF</button>
                                     </div>
                                 </div>
-                            </form>
+                            </form> --}}
                         </div>
                     </div>
                 </div>
