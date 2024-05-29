@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
-class ObjectDetectionController extends Controller
+class TestFunctionController extends Controller
 {
     public function detectObjects(Request $request)
     {
@@ -23,4 +23,5 @@ class ObjectDetectionController extends Controller
         // Mengembalikan hasil deteksi objek kepada frontend
         return $response->json();
     }
+
 }
