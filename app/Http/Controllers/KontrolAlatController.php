@@ -31,44 +31,51 @@ class KontrolAlatController extends Controller
                 ->make(true);
         }
 
-        //* Mengambil status relay 
+        //* Mengambil data relay
         try {
             $channelId = '2476613';
             $apiKey = 'OB202AUVGT70OMR2';
-
+        
             // URL untuk field3
             $urlField3 = "https://api.thingspeak.com/channels/{$channelId}/fields/3.json?api_key={$apiKey}&results=1";
             // URL untuk field4
             $urlField4 = "https://api.thingspeak.com/channels/{$channelId}/fields/4.json?api_key={$apiKey}&results=1";
-
+        
             // Mengambil data untuk field3
             $responseField3 = Http::get($urlField3);
             $statusField3 = $responseField3->json();
-
+        
             // Mengambil data untuk field4
             $responseField4 = Http::get($urlField4);
             $statusField4 = $responseField4->json();
-
+        
             // Memeriksa dan mengambil nilai terbaru untuk field3
-            if (!empty($statusField3['feeds'])) {
+            if (isset($statusField3['feeds']) && !empty($statusField3['feeds'])) {
                 $latestDataField3 = $statusField3['feeds'][0];
-                $relay1 = $latestDataField3['field3'] === "1" ? "On" : "Off";
+                if (isset($latestDataField3['field3'])) {
+                    $relay1 = $latestDataField3['field3'] === "1" ? "On" : "Off";
+                } else {
+                    $relay1 = null;
+                }
             } else {
                 $relay1 = null;
             }
-
+        
             // Memeriksa dan mengambil nilai terbaru untuk field4
-            if (!empty($statusField4['feeds'])) {
+            if (isset($statusField4['feeds']) && !empty($statusField4['feeds'])) {
                 $latestDataField4 = $statusField4['feeds'][0];
-                $relay2 = $latestDataField4['field4'] === "1" ? "On" : "Off";
+                if (isset($latestDataField4['field4'])) {
+                    $relay2 = $latestDataField4['field4'] === "1" ? "On" : "Off";
+                } else {
+                    $relay2 = null;
+                }
             } else {
                 $relay2 = null;
             }
-
+        
         } catch (\Exception $e) {
             Log::error('Error ketika mengirim permintaan ke ThingSpeak: ' . $e->getMessage());
         }
-
 
         return view('auth.kontrolalat.kontrolalat', [
             'suhu' => $suhu,
