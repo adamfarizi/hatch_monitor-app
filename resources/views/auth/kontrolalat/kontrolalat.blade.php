@@ -270,7 +270,7 @@
         </div>
         {{-- Grafik --}}
         <div class="row">
-            <div class="col-6">
+            <div class="col-lg-6 col-md-12">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Grafik Suhu <span>| Minggu ini</span></h5>
@@ -278,7 +278,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-lg-6 col-md-12">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Grafik Kelembaban <span>| Minggu ini</span></h5>
