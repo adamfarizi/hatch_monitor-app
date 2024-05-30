@@ -48,6 +48,9 @@
             cluster: 'ap1'
         });
     </script>
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
 </head>
 
 <body>
@@ -231,7 +234,6 @@
             });
         });
     </script>
-
 
     {{-- Data Tables --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>

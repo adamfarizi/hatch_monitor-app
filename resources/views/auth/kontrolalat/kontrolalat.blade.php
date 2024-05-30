@@ -158,7 +158,7 @@
                     <div class="card-body">
                         <h5 class="card-title row">
                             <div class="col">
-                                Kontrol Alat 
+                                Kontrol Alat
                             </div>
                         </h5>
                         <div class="container" style="height:53vh">
@@ -270,11 +270,19 @@
         </div>
         {{-- Grafik --}}
         <div class="row">
-            <div class="col-12">
+            <div class="col-6">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Grafik Suhu dan Kelembaban <span>| Minggu ini</span></h5>
-                        <div id="grafikSuhuKelembaban"></div>
+                        <h5 class="card-title">Grafik Suhu <span>| Minggu ini</span></h5>
+                        <div id="temperatureChart"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Grafik Kelembaban <span>| Minggu ini</span></h5>
+                        <div id="humidityChart"></div>
                     </div>
                 </div>
             </div>
@@ -351,21 +359,19 @@
                 .then(response => response.json())
                 .then(data => {
                     // Memanggil fungsi untuk menggambar grafik dengan data yang diperoleh
-                    drawChart(data);
+                    drawTemperatureChart(data);
+                    drawHumidityChart(data);
                 })
                 .catch(error => {
                     console.error('Error:', error);
                 });
 
-            // Fungsi untuk menggambar grafik dengan data yang diperoleh
-            function drawChart(data) {
+            // Fungsi untuk menggambar grafik suhu dengan data yang diperoleh
+            function drawTemperatureChart(data) {
                 var options = {
                     series: [{
                         name: 'Suhu',
                         data: data.suhu,
-                    }, {
-                        name: 'Kelembaban',
-                        data: data.kelembaban
                     }],
                     chart: {
                         height: 350,
@@ -419,11 +425,78 @@
                     }
                 };
 
-                var chart = new ApexCharts(document.querySelector("#grafikSuhuKelembaban"), options);
-                chart.render();
-
+                var temperatureChart = new ApexCharts(document.querySelector("#temperatureChart"), options);
+                temperatureChart.render();
             }
 
+            // Fungsi untuk menggambar grafik kelembaban dengan data yang diperoleh
+            function drawHumidityChart(data) {
+                var options = {
+                    series: [{
+                        name: 'Kelembaban',
+                        data: data.kelembaban
+                    }],
+                    chart: {
+                        height: 350,
+                        type: 'area',
+                        toolbar: {
+                            show: true,
+                            offsetX: 0,
+                            offsetY: 0,
+                            tools: {
+                                download: true,
+                                selection: false,
+                                zoom: false,
+                                zoomin: false,
+                                zoomout: false,
+                                pan: false,
+                                reset: false | '<img src="/static/icons/reset.png" width="20">',
+                                customIcons: []
+                            },
+                        },
+                    },
+                    markers: {
+                        colors: '#00e396',
+                        size: 4
+                    },
+                    fill: {
+                        colors: ['#00e396'],
+                        type: "gradient",
+                        gradient: {
+                            shadeIntensity: 1,
+                            opacityFrom: 0.3,
+                            opacityTo: 0.4,
+                            stops: [0, 90, 100]
+                        }
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    stroke: {
+                        curve: 'smooth',
+                        width: 2,
+                        colors: ['#00e396']
+                    },
+                    xaxis: {
+                        type: 'datetime',
+                        categories: data.categories,
+                        labels: {
+                            datetimeUTC: false,
+                        }
+                    },
+                    tooltip: {
+                        x: {
+                            format: 'dd/MM/yy HH:mm'
+                        },
+                        marker: {
+                            fillColors: ['#00e396']
+                        }
+                    }
+                };
+
+                var humidityChart = new ApexCharts(document.querySelector("#humidityChart"), options);
+                humidityChart.render();
+            }
         });
     </script>
 

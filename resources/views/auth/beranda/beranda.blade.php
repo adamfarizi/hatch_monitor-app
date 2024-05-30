@@ -131,8 +131,10 @@
                 });
 
             // Fungsi untuk menggambar grafik dengan data yang diperoleh
+            var chart; // Mendeklarasikan variabel chart di luar fungsi agar bisa diakses di fungsi lain
+
             function drawChart(data) {
-                new ApexCharts(document.querySelector("#grafikSuhuKelembaban"), {
+                chart = new ApexCharts(document.querySelector("#grafikSuhuKelembaban"), {
                     series: [{
                         name: 'Suhu',
                         data: data.suhu,
@@ -182,7 +184,7 @@
                         type: 'datetime',
                         categories: data.categories,
                         labels: {
-                            datetimeUTC:false,
+                            datetimeUTC: false,
                         }
                     },
                     tooltip: {
@@ -190,11 +192,14 @@
                             format: 'dd/MM/yy HH:mm'
                         },
                     }
-                }).render();
+                });
+
+                chart.render();
             }
+
         });
     </script>
-    
+
     {{-- Penetasan --}}
     <script>
         document.addEventListener("DOMContentLoaded", () => {

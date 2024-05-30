@@ -55,7 +55,7 @@ class GetThingSpeak extends Command
 
             // Kumpulkan data dalam sebuah array
             $newData = [
-                'waktu_monitor' => $dataThingSpeak->waktu_monitor->format('Y-m-d H:i:s'), // Format sesuai yang diharapkan oleh DataTables
+                'waktu_monitor' => $dataThingSpeak->waktu_monitor->format('Y-m-d H:i:s'),
                 'suhu_monitor' => $suhu,
                 'kelembaban_monitor' => $kelembaban
             ];

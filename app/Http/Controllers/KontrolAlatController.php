@@ -72,8 +72,6 @@ class KontrolAlatController extends Controller
             } else {
                 $relay2 = null;
             }
-
-            // dd($latestDatafield1, $latestDatafield2);
         
         } catch (\Exception $e) {
             Log::error('Error ketika mengirim permintaan ke ThingSpeak: ' . $e->getMessage());
