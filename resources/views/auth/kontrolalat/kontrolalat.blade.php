@@ -128,6 +128,24 @@
                                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"
                                             aria-label="Close"></button>
                                     </div>
+                                @elseif (session('error'))
+                                    <div class="alert alert-info bg-danger text-light border-0 alert-dismissible fade show"
+                                        role="alert"
+                                        style="position: absolute; z-index: 9999; top: 30%; left: 50%; transform: translate(-50%, -50%); width: 60%;">
+                                        <i class="ri-information-line"></i>
+                                        <b>Error ! </b> {{ session('error') }}
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                    </div>
+                                @elseif (session('loading'))
+                                    <div class="alert alert-info bg-warning text-dark border-0 alert-dismissible fade show"
+                                        role="alert"
+                                        style="position: absolute; z-index: 9999; top: 30%; left: 50%; transform: translate(-50%, -50%); width: 70%;">
+                                        <i class="ri-information-line"></i>
+                                        <b>Status ! </b> {{ session('loading') }}
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -140,7 +158,7 @@
                     <div class="card-body">
                         <h5 class="card-title row">
                             <div class="col">
-                                Kontrol Alat
+                                Kontrol Alat 
                             </div>
                         </h5>
                         <div class="container" style="height:53vh">
