@@ -57,7 +57,8 @@
                     </div>
                 </div>
                 <div class="d-flex flex-column flex-lg-row mb-5 pb-3">
-                    <div class="col-12 col-lg-6">
+                    {{-- Keterangan Penetasan --}}
+                    <div class="col-md-12 col-lg-6">
                         <table class="table table-borderless">
                             <tbody>
                                 <tr>
@@ -106,7 +107,8 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="col-12 col-lg-6">
+                    {{-- Hasil Capture --}}
+                    <div class="col-md-12 col-lg-6">
                         <div id="container" class="container mb-1" style="height: 84%;">
                             <p class="fw-semibold">Hasil Capture <span class="ms-5 fw-normal">:</span></p>
                             <div id="imageWrapper" class="bg-dark h-100 text-center text-white"
