@@ -32,9 +32,10 @@
                                 <i class="bi bi-thermometer-half"></i>
                             </div>
                             <div class="ps-3">
-                                <h6>{{ $suhu }} °C</h6>
+                                <h6 id="suhu">{{ $suhu }} °C</h6>
                                 <span class="text-muted small pt-1">sebelumnya </span> <span
-                                    class="text-primary small pt-2 ps-1 fw-bold">{{ $suhuSebelumnya }} °C</span>
+                                    class="text-primary small pt-2 ps-1 fw-bold" id="suhu-sebelumnya">{{ $suhuSebelumnya }}
+                                    °C</span>
                             </div>
                         </div>
                     </div>
@@ -60,16 +61,17 @@
                                 <i class="bi bi-droplet-half"></i>
                             </div>
                             <div class="ps-3">
-                                <h6>{{ $kelembaban }} %</h6>
+                                <h6 id="kelembaban">{{ $kelembaban }} %</h6>
                                 <span class="text-muted small pt-1">sebelumnya </span> <span
-                                    class="text-success small pt-2 ps-1 fw-bold">{{ $kelembabanSebelumnya }} %</span>
+                                    class="text-success small pt-2 ps-1 fw-bold"
+                                    id="kelembaban-sebelumnya">{{ $kelembabanSebelumnya }} %</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div><!-- End Kelembaban Card -->
 
-            <!-- Waktu Card -->
+            <!-- Penetasan Card -->
             <div class="col-xxl-4 col-md-6">
                 <div class="card info-card">
                     <div class="card-body">
@@ -93,7 +95,7 @@
                         </div>
                     </div>
                 </div>
-            </div><!-- End Waktu Card -->
+            </div><!-- End Penetasan Card -->
         </div>
         <div class="row">
             <div class="col-lg-6 col-md-12">
@@ -116,6 +118,37 @@
     </section>
 @endsection
 @section('js')
+    {{-- Realtime Card --}}
+    <script>
+        var channel = pusher.subscribe('thingspeak-channel');
+        channel.bind('thingspeak-event', function(data) {
+            updateSuhu(data.newData.suhu_monitor);
+            updateKelembaban(data.newData.kelembaban_monitor);
+        });
+
+        var cardChannel = pusher.subscribe('card-channel');
+        cardChannel.bind('card-event', function(data) {
+            updateSuhuSebelumnya(data.lastData.suhu_sebelumnya);
+            updateKelembabanSebelumnya(data.lastData.kelembaban_sebelumnya);
+        });
+
+        function updateSuhu(suhu) {
+            document.getElementById('suhu').innerHTML = suhu + ' °C';
+        }
+
+        function updateSuhuSebelumnya(suhuSebelumnya) {
+            document.getElementById('suhu-sebelumnya').innerHTML = suhuSebelumnya + ' °C';
+        }
+
+        function updateKelembaban(kelembaban) {
+            document.getElementById('kelembaban').innerHTML = kelembaban + ' %';
+        }
+
+        function updateKelembabanSebelumnya(kelembabanSebelumnya) {
+            document.getElementById('kelembaban-sebelumnya').innerHTML = kelembabanSebelumnya + ' %';
+        }
+    </script>
+
     {{-- Suhu --}}
     <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -196,6 +229,37 @@
 
                 chart.render();
             }
+            
+            // Realtime Chart
+            // var channel = pusher.subscribe('thingspeak-channel');
+            // channel.bind('thingspeak-event', function(data) {
+            //     updateChart(data.newData);
+            // });
+
+            // function updateChart(newData) {
+            //     var waktu_monitor = newData.waktu_monitor;
+            //     var suhu = newData.suhu_monitor;
+            //     var kelembaban = newData.kelembaban_monitor;
+
+            //     // Menyiapkan data untuk disimpan dalam array objek dengan properti 'x' dan 'y'
+            //     var newDataSuhu = {
+            //         x: waktu_monitor,
+            //         y: suhu
+            //     };
+            //     var newDataKelembaban = {
+            //         x: waktu_monitor,
+            //         y: kelembaban
+            //     };
+
+            //     // Menyimpan data baru dalam array sebelum menambahkannya ke grafik
+            //     var newDataArray = [
+            //         newDataSuhu,
+            //         newDataKelembaban
+            //     ];
+
+            //     // Menambahkan data baru ke dalam seri data grafik
+            //     chart.appendData(newDataArray);
+            // }
 
         });
     </script>

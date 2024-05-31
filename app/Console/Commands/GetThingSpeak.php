@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Events\CardEvent;
 use App\Events\ThingSpeakEvent;
 use App\Models\Monitor;
 use Illuminate\Console\Command;
@@ -53,15 +54,24 @@ class GetThingSpeak extends Command
             $suhu = $latestData[$field1];
             $kelembaban = $latestData[$field2];
 
-            // Kumpulkan data dalam sebuah array
+            // Broadcast data baru
             $newData = [
                 'waktu_monitor' => $dataThingSpeak->waktu_monitor->format('Y-m-d H:i:s'),
                 'suhu_monitor' => $suhu,
                 'kelembaban_monitor' => $kelembaban
             ];
-
-            // Emitkan event 'thingspeak-event' dengan data baru
             broadcast(new ThingSpeakEvent($newData));
+
+            // Mengambil data suhu lama
+            $suhuSebelumnya = Monitor::orderBy('waktu_monitor', 'desc')->skip(1)->take(1)->pluck('suhu_monitor')->first();
+            $kelembabanSebelumnya = Monitor::orderBy('waktu_monitor', 'desc')->skip(1)->take(1)->pluck('kelembaban_monitor')->first();
+
+            // Broadcast data lama
+            $lastData = [
+                'suhu_sebelumnya' => $suhuSebelumnya,
+                'kelembaban_sebelumnya' => $kelembabanSebelumnya,
+            ];
+            broadcast(new CardEvent($lastData));
             
             $this->info('Data berhasil disimpan : Suhu (' . $suhu . ') & Kelembaban : (' . $kelembaban . ')');
         } else {

@@ -32,9 +32,10 @@
                                 <i class="bi bi-thermometer-half"></i>
                             </div>
                             <div class="ps-3">
-                                <h6>{{ $suhu }} °C</h6>
+                                <h6 id="suhu">{{ $suhu }} °C</h6>
                                 <span class="text-muted small pt-1">sebelumnya </span> <span
-                                    class="text-primary small pt-2 ps-1 fw-bold">{{ $suhuSebelumnya }} °C</span>
+                                    class="text-primary small pt-2 ps-1 fw-bold" id="suhu-sebelumnya">{{ $suhuSebelumnya }}
+                                    °C</span>
                             </div>
                         </div>
                     </div>
@@ -60,9 +61,10 @@
                                 <i class="bi bi-droplet-half"></i>
                             </div>
                             <div class="ps-3">
-                                <h6>{{ $kelembaban }} %</h6>
+                                <h6 id="kelembaban">{{ $kelembaban }} %</h6>
                                 <span class="text-muted small pt-1">sebelumnya </span> <span
-                                    class="text-success small pt-2 ps-1 fw-bold">{{ $kelembabanSebelumnya }} %</span>
+                                    class="text-success small pt-2 ps-1 fw-bold"
+                                    id="kelembaban-sebelumnya">{{ $kelembabanSebelumnya }} %</span>
                             </div>
                         </div>
                     </div>
@@ -349,6 +351,37 @@
                 connectionStatus.style.display = 'block'; // Tampilkan pesan kamera tidak tersambung
             }
         });
+    </script>
+
+    {{-- Realtime Card --}}
+    <script>
+        var channel = pusher.subscribe('thingspeak-channel');
+        channel.bind('thingspeak-event', function(data) {
+            updateSuhu(data.newData.suhu_monitor);
+            updateKelembaban(data.newData.kelembaban_monitor);
+        });
+
+        var cardChannel = pusher.subscribe('card-channel');
+        cardChannel.bind('card-event', function(data) {
+            updateSuhuSebelumnya(data.lastData.suhu_sebelumnya);
+            updateKelembabanSebelumnya(data.lastData.kelembaban_sebelumnya);
+        });
+
+        function updateSuhu(suhu) {
+            document.getElementById('suhu').innerHTML = suhu + ' °C';
+        }
+
+        function updateSuhuSebelumnya(suhuSebelumnya) {
+            document.getElementById('suhu-sebelumnya').innerHTML = suhuSebelumnya + ' °C';
+        }
+
+        function updateKelembaban(kelembaban) {
+            document.getElementById('kelembaban').innerHTML = kelembaban + ' %';
+        }
+
+        function updateKelembabanSebelumnya(kelembabanSebelumnya) {
+            document.getElementById('kelembaban-sebelumnya').innerHTML = kelembabanSebelumnya + ' %';
+        }
     </script>
 
     {{-- Grafik --}}
