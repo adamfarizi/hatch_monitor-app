@@ -229,37 +229,6 @@
 
                 chart.render();
             }
-            
-            // Realtime Chart
-            // var channel = pusher.subscribe('thingspeak-channel');
-            // channel.bind('thingspeak-event', function(data) {
-            //     updateChart(data.newData);
-            // });
-
-            // function updateChart(newData) {
-            //     var waktu_monitor = newData.waktu_monitor;
-            //     var suhu = newData.suhu_monitor;
-            //     var kelembaban = newData.kelembaban_monitor;
-
-            //     // Menyiapkan data untuk disimpan dalam array objek dengan properti 'x' dan 'y'
-            //     var newDataSuhu = {
-            //         x: waktu_monitor,
-            //         y: suhu
-            //     };
-            //     var newDataKelembaban = {
-            //         x: waktu_monitor,
-            //         y: kelembaban
-            //     };
-
-            //     // Menyimpan data baru dalam array sebelum menambahkannya ke grafik
-            //     var newDataArray = [
-            //         newDataSuhu,
-            //         newDataKelembaban
-            //     ];
-
-            //     // Menambahkan data baru ke dalam seri data grafik
-            //     chart.appendData(newDataArray);
-            // }
 
         });
     </script>

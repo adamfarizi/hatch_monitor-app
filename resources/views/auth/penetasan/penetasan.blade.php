@@ -165,10 +165,11 @@
                                     <tr style="border: transparent">
                                         <td colspan="3">
                                             <p class="fw-semibold">Kondisi Terakhir</p>
-                                            <div class="container mb-1" style="height: 50vh">
+                                            <div class="container mb-1 d-flex justify-content-center align-items-center"
+                                                style="height: 50vh">
                                                 <div class="bg-dark text-center text-white"
-                                                    style="border-radius: 25px; position: relative; overflow: hidden; width:400px;">
-                                                    <img style="width: 100%; height: 100%; object-fit:cover;"
+                                                    style="border-radius: 25px; position: relative; overflow: hidden; max-width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
+                                                    <img style="max-height: 100%; max-width: 100%; object-fit: cover;"
                                                         src="{{ asset('images/capture/' . $latestHarian->bukti_harian) }}"
                                                         alt="">
                                                 </div>
@@ -179,10 +180,11 @@
                                     <tr style="border: transparent">
                                         <td colspan="3">
                                             <p class="fw-semibold">Kondisi Terakhir</p>
-                                            <div class="container mb-1" style="height: 50vh">
-                                                <div class="bg-dark h-100 text-center text-white"
+                                            <div class="container mb-1 d-flex justify-content-center align-items-center"
+                                                style="height: 50vh">
+                                                <div class="bg-dark h-100 w-100 text-center text-white d-flex justify-content-center align-items-center"
                                                     style="border-radius: 25px;">
-                                                    <p style="padding-top: 23vh">
+                                                    <p>
                                                         <i class="bi bi-exclamation-circle-fill"></i>
                                                         <span>Belum ada gambar</span>
                                                     </p>
@@ -196,7 +198,6 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
                     </div>
                 </div>
             </div>

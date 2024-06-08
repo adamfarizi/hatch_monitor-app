@@ -172,7 +172,7 @@
                             <form method="POST" action="{{ url('/kontrolRelay') }}">
                                 @csrf
                                 <div class="py-2 mb-4">
-                                    <p class="small">Lampu LED
+                                    <p class="small">Lampu Bohlam
                                         <span class="ms-2">
                                             @if ($relay1 === 'On')
                                                 <span class="badge rounded-pill bg-primary">On</span>
@@ -197,7 +197,7 @@
                                     </div>
                                 </div>
                                 <div class="py-2">
-                                    <p class="small">Lampu Bohlam
+                                    <p class="small">Lampu LED
                                         <span class="ms-2">
                                             @if ($relay2 === 'On')
                                                 <span class="badge rounded-pill bg-primary">On</span>

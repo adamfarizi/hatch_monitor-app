@@ -51,7 +51,7 @@
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-plus-lg me-1"></i> Tambah Penetasan
+                                <i class="bi bi-plus-lg me-1"></i> Tambah Kondisi Harian
                             </button>
                         </form>
                     </div>
@@ -176,10 +176,10 @@
                                                             <p class="fw-semibold mb-0">Scan</p>
                                                             <ul>
                                                                 {{-- <li>Nomor Telur : A1, B2, B3</li> --}}
-                                                                <li>Jumlah Infertil : {{ $infertil->jumlah_infertil }} telur</li>
+                                                                <li>Jumlah Infertil : {{ $infertil->jumlah_infertil }}
+                                                                    telur</li>
                                                                 <li>
-                                                                    <a class="" href="#"
-                                                                        data-bs-toggle="modal"
+                                                                    <a class="" href="#" data-bs-toggle="modal"
                                                                         data-bs-target="#buktiScan{{ $harian->id_harian }}">
                                                                         <i class="bi bi-camera-fill me-1"></i>Bukti
                                                                         scan</a>
@@ -264,16 +264,16 @@
     {{-- Modal Bukti Scan --}}
     @foreach ($harians as $harian)
         <div class="modal fade" id="buktiScan{{ $harian->id_harian }}" tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title fw-bold" style="color: #012970;">Bukti Scan</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body d-flex justify-content-center">
                         @foreach ($harian->infertil as $infertil)
-                            <div class="bg-dark h-100 text-center text-white"
-                                style="border-radius: 25px; position: relative; overflow: hidden; max-height: 40vh; max-width:450px;">
+                            <div class="bg-dark text-center text-white"
+                                style="border-radius: 25px; position: relative; overflow: hidden; max-height: 80vh; max-width: 100%;">
                                 @php
                                     $scanPath = public_path('images/scan/' . $infertil->bukti_infertil);
                                     $capturePath = asset('images/capture/' . $infertil->bukti_infertil);
@@ -281,11 +281,8 @@
                                         ? asset('images/scan/' . $infertil->bukti_infertil)
                                         : $capturePath;
                                 @endphp
-                                <div class="bg-dark h-100 text-center text-white"
-                                    style="border-radius: 25px; position: relative; overflow: hidden; max-height: 40vh; max-width:450px;">
-                                    <img src="{{ $imageUrl }}" class="img-fluid" alt="Bukti Harian"
-                                        style="width: 100%; height: 40vh; object-fit: cover; border-radius: 25px;">
-                                </div>
+                                <img src="{{ $imageUrl }}" class="img-fluid" alt="Bukti Harian"
+                                    style="max-height: 80vh; object-fit: cover; border-radius: 25px;">
                             </div>
                         @endforeach
                     </div>
@@ -296,6 +293,7 @@
             </div>
         </div>
     @endforeach
+
 @endsection
 @section('js')
     {{-- ESP Cam Style --}}

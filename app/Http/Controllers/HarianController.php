@@ -80,6 +80,11 @@ class HarianController extends Controller
             $fertilCount = 0;
             $scanFileName = null;
 
+            // Move the file to the new destination folder
+            // $destinationFolder = public_path('images/scan/');
+            // $destinationFile = $destinationFolder . $captureFileName;
+            // file_put_contents($destinationFile, $image_base64);
+
         } elseif ($batas_scan->eq($today)) {
             //* Mengirim gambar ke endpoint Flask
             $response = Http::attach(
