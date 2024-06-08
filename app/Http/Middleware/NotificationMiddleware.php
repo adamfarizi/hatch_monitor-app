@@ -13,13 +13,12 @@ class NotificationMiddleware
     public function handle(Request $request, Closure $next)
     {
         $today = Carbon::today();
-        $notifications = Penetasan::whereDate('batas_scan', $today)
-        ->whereYear('batas_scan', $today->year)
-        ->whereMonth('batas_scan', $today->month)
-        ->get();
-        
+        $scanNotifications = Penetasan::whereDate('batas_scan', $today)->get();
+        $completeNotifications = Penetasan::whereDate('tanggal_selesai', $today)->get();
+
         // Bagikan notifikasi ke semua view
-        View::share('notifications', $notifications);
+        View::share('scanNotifications', $scanNotifications);
+        View::share('completeNotifications', $completeNotifications);
 
         return $next($request);
     }

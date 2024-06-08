@@ -69,25 +69,30 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
                         <i class="bi bi-bell"></i>
-                        @if (isset($notifications) && count($notifications) > 0)
-                            <span class="badge bg-primary badge-number">{{ count($notifications) }}</span>
+                        @if (
+                            (isset($scanNotifications) && count($scanNotifications) > 0) ||
+                                (isset($completeNotifications) && count($completeNotifications) > 0))
+                            <span
+                                class="badge bg-primary badge-number">{{ count($scanNotifications) + count($completeNotifications) }}</span>
                         @endif
                     </a><!-- End Notification Icon -->
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
                         <li class="dropdown-header">
-                            Anda memiliki {{ isset($notifications) ? count($notifications) : 0 }} notifikasi baru
+                            Anda memiliki
+                            {{ (isset($scanNotifications) ? count($scanNotifications) : 0) + (isset($completeNotifications) ? count($completeNotifications) : 0) }}
+                            notifikasi baru
                         </li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
 
-                        @if (isset($notifications) && count($notifications) > 0)
-                            @foreach ($notifications as $notification)
+                        @if (isset($scanNotifications) && count($scanNotifications) > 0)
+                            @foreach ($scanNotifications as $notification)
                                 <li class="notification-item" style="cursor: pointer;"
                                     onclick="redirectToPenetasan('{{ $notification->id_penetasan }}')">
                                     <i class="bi bi-exclamation-circle text-warning"></i>
                                     <div>
-                                        <h4>Pemberitahuan Sistem !</h4>
+                                        <h4>Pemberitahuan Sistem!</h4>
                                         <p>Penetasan yang dimulai pada tanggal
                                             {{ date('d/m/Y', strtotime($notification->tanggal_mulai)) }} telah mencapai
                                             hari ke-10. Telur yang tidak mengalami pembuahan dapat anda keluarkan dari
@@ -99,7 +104,31 @@
                                     <hr class="dropdown-divider">
                                 </li>
                             @endforeach
-                        @else
+                        @endif
+
+                        @if (isset($completeNotifications) && count($completeNotifications) > 0)
+                            @foreach ($completeNotifications as $notification)
+                                <li class="notification-item" style="cursor: pointer;"
+                                    onclick="redirectToPenetasan('{{ $notification->id_penetasan }}')">
+                                    <i class="bi bi-check-circle text-success"></i>
+                                    <div>
+                                        <h4>Penetasan Selesai!</h4>
+                                        <p>Penetasan yang dimulai pada tanggal
+                                            {{ date('d/m/Y', strtotime($notification->tanggal_mulai)) }} telah selesai
+                                            hari ini. Silakan cek hasil penetasan Anda.</p>
+                                        <p>{{ \Carbon\Carbon::parse($notification->tanggal_selesai)->diffForHumans() }}
+                                        </p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                            @endforeach
+                        @endif
+
+                        @if (isset($scanNotifications) &&
+                                count($scanNotifications) == 0 &&
+                                (isset($completeNotifications) && count($completeNotifications) == 0))
                             <li class="notification-item">
                                 <i class="bi bi-info-circle text-primary"></i>
                                 <div>
@@ -110,7 +139,8 @@
                         @endif
                         <br>
                     </ul><!-- End Notification Dropdown Items -->
-                </li><!-- End Notification Nav -->
+                </li>
+                <!-- End Notification Nav -->
 
                 {{-- Profile --}}
                 <li class="nav-item dropdown pe-3">

@@ -6,7 +6,8 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="">Home</a></li>
                 <li class="breadcrumb-item"><a href="{{ route('penetasan') }}">Penetasan</a></li>
-                <li class="breadcrumb-item"><a href="{{ url('/penetasan/' . $penetasan->id_penetasan . '/harian') }}">Cek Kondisi Harian</a></li>
+                <li class="breadcrumb-item"><a href="{{ url('/penetasan/' . $penetasan->id_penetasan . '/harian') }}">Cek
+                        Kondisi Harian</a></li>
                 <li class="breadcrumb-item active">@yield('title', $title)</li>
             </ol>
         </nav>
@@ -36,7 +37,9 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Edit Data Kondisi Harian Telur</h5>
-                <form action="{{ url('/penetasan/' . $penetasan->id_penetasan . '/harian/' . $harian->id_harian . '/edit') }}" method="POST">
+                <form
+                    action="{{ url('/penetasan/' . $penetasan->id_penetasan . '/harian/' . $harian->id_harian . '/edit') }}"
+                    method="POST">
                     @csrf
                     @method('PUT')
                     <div class="row mb-3">
@@ -53,11 +56,14 @@
                         <div class="col-sm-10">
                             <div class="row">
                                 <div class="col input-group">
-                                    <input type="number" class="form-control" aria-describedby="basic-addon2"
-                                        id="jumlah_infertil" name="jumlah_infertil" value="{{ $infertil->jumlah_infertil }}" readonly>
+                                    <input type="number" class="form-control text-muted" aria-describedby="basic-addon2"
+                                        id="jumlah_infertil" name="jumlah_infertil" value="{{ $infertil->jumlah_infertil }}"
+                                        readonly>
                                     <span class="input-group-text" id="basic-addon2">Telur</span>
                                 </div>
                             </div>
+                            <p class="small text-danger mt-2 mb-0"><i class="ri-information-line"></i> Data infertil tidak bisa
+                                diubah.</p>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -65,7 +71,7 @@
                                 class="text-danger">*</span></label>
                         <div class="col-sm-10">
                             <input type="number" class="form-control" id="menetas" name="menetas"
-                            value="{{ $harian->menetas }}" required>
+                                value="{{ $harian->menetas }}" required>
                         </div>
                     </div>
                     <fieldset class="row mb-3">
@@ -108,7 +114,8 @@
                                 <div class="row mb-3" id="textSectionKelembaban">
                                     <div class="input-group mb-3">
                                         <input type="number" class="form-control" aria-describedby="basic-addon2"
-                                            id="kelembaban_scan" name="kelembaban_scan" value="{{ $kelembaban }}" readonly>
+                                            id="kelembaban_scan" name="kelembaban_scan" value="{{ $kelembaban }}"
+                                            readonly>
                                         <span class="input-group-text" id="basic-addon2">%</span>
                                     </div>
                                 </div>
@@ -120,7 +127,8 @@
                                 <div class="row mb-3" id="formSectionKelembaban" style="display: none;">
                                     <div class="input-group mb-3">
                                         <input type="number" class="form-control" aria-describedby="basic-addon2"
-                                            id="kelembaban_manual" name="kelembaban_manual" value="{{ $harian->kelembaban_harian }}">
+                                            id="kelembaban_manual" name="kelembaban_manual"
+                                            value="{{ $harian->kelembaban_harian }}">
                                         <span class="input-group-text" id="basic-addon2">%</span>
                                     </div>
                                 </div>
@@ -140,38 +148,6 @@
             </div>
         </div>
     </section>
-
-    {{-- Modal Infertil --}}
-    <div class="modal fade" id="scaninfertil" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold" style="color: #012970;">Scan Infertil</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form action="{{ url('/penetasan/create') }}" method="POST">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="form-group mb-3">
-                            <label for="inputDate" class="form-label">Tanggal Mulai <span
-                                    class="text-danger">*</span></label>
-                            <input type="datetime-local" class="form-control" id="tanggal_mulai" name="tanggal_mulai"
-                                required>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="inputDate" class="form-label">Jumlah Telur <span
-                                    class="text-danger">*</span></label>
-                            <input type="number" class="form-control" id="jumlah_telur" name="jumlah_telur" required>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 @endsection
 @section('js')
     <script>
