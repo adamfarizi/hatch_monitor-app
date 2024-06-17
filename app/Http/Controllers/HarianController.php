@@ -233,22 +233,29 @@ class HarianController extends Controller
             $batas_scan = Carbon::parse($penetasan->batas_scan)->startOfDay();
             $today = Carbon::now()->startOfDay();
 
-            if ($batas_scan->lt($today)) {
-                // $prediksi_menetas = $penetasan->prediksi_menetas;
+            // Ambil jumlah_infertil terakhir dari model Harian
+            $jumlah_infertil_terakhir = $penetasan->harian()->orderBy('created_at', 'desc')->first()->jumlah_infertil;
 
-            } elseif ($batas_scan->eq($today)) {
-                // $prediksi_menetas = $penetasan->jumlah_telur - $request->input('jumlah_infertil');
+            //* Create prediksi menetas
+            if ($batas_scan->addDay()->eq($today)) {
+                // Hitung prediksi menetas
+                $prediksi_menetas = $penetasan->jumlah_telur - $jumlah_infertil_terakhir;
 
+                // Update hanya jika prediksi_menetas dihitung
+                Penetasan::where('id_penetasan', $penetasan->id_penetasan)->update([
+                    'prediksi_menetas' => $prediksi_menetas,
+                    'total_menetas' => $penetasan->total_menetas + $request->input('menetas'),
+                    'rata_rata_suhu' => $rata_rata_suhu,
+                    'rata_rata_kelembaban' => $rata_rata_kelembaban,
+                ]);
             } else {
-                // $prediksi_menetas = $penetasan->jumlah_telur - $request->input('jumlah_infertil');
-
+                // Tetap update field lain kecuali prediksi_menetas
+                Penetasan::where('id_penetasan', $penetasan->id_penetasan)->update([
+                    'total_menetas' => $penetasan->total_menetas + $request->input('menetas'),
+                    'rata_rata_suhu' => $rata_rata_suhu,
+                    'rata_rata_kelembaban' => $rata_rata_kelembaban,
+                ]);
             }
-            Penetasan::where('id_penetasan', $id_penetasan)->update([
-                // 'prediksi_menetas' => $prediksi_menetas,
-                'total_menetas' => $penetasan->total_menetas + $request->input('menetas'),
-                'rata_rata_suhu' => $rata_rata_suhu,
-                'rata_rata_kelembaban' => $rata_rata_kelembaban,
-            ]);
 
             $url = url('/penetasan/' . $id_penetasan . '/harian');
             return redirect()->away($url)->with('success', 'Data harian baru berhasil ditambahkan !');

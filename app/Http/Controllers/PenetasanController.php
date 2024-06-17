@@ -111,27 +111,13 @@ class PenetasanController extends Controller
             $batas_scan = $tanggal_mulai->copy()->addDays(10);
             $jumlah_telur = $request->input('jumlah_telur');
 
-            $dataHarianExists = Harian::where('id_penetasan', $id_penetasan)->exists();
-
-            if ($dataHarianExists) {
-                $harian = Harian::where('id_penetasan', $id_penetasan)->get();
-                $id_harian = $harian->pluck('id_harian');
-                $jumlah_infertil = Infertil::whereIn('id_harian', $id_harian)
-                    ->sum('jumlah_infertil');
-
-                // $prediksi_menetas = $jumlah_telur - $jumlah_infertil;
-            } else {
-                // $prediksi_menetas = $jumlah_telur;
-            }
-
             Penetasan::where('id_penetasan', $id_penetasan)->update([
                 'tanggal_mulai' => $request->input('tanggal_mulai'),
                 'tanggal_selesai' => $tanggal_selesai,
                 'batas_scan' => $batas_scan,
-                // 'prediksi_menetas' => $prediksi_menetas,
+                'prediksi_menetas' => $jumlah_telur,
                 'jumlah_telur' => $jumlah_telur,
             ]);
-
 
             return redirect()->back()->with('success', 'Penetasan berhasil diubah !');
 

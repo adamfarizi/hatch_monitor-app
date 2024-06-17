@@ -24,8 +24,12 @@ class AppServiceProvider extends ServiceProvider
 
         View::share([
             //! Wifi Hotspot Area 
-            'link1' => 'http://10.10.10.100',
-            'link2' => 'http://10.10.10.101',
+            // 'link1' => 'http://10.10.10.100',
+            // 'link2' => 'http://10.10.10.101',
+            
+            //! Wifi Hotspot Area 
+            'link1' => 'http://192.168.16.100',
+            'link2' => 'http://192.168.16.101',
 
             //! Wifi Lainnya 
             // 'link1' => 'http://192.168.1.150',

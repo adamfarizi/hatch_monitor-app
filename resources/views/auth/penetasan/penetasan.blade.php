@@ -216,24 +216,50 @@
                     <form action="{{ url('/penetasan/' . $penetasan->id_penetasan . '/edit') }}" method="POST">
                         @csrf
                         @method('PUT')
-                        <div class="modal-body">
-                            <div class="form-group mb-3">
-                                <label for="inputDate" class="form-label">Tanggal Mulai <span
-                                        class="text-danger">*</span></label>
-                                <input type="datetime-local" class="form-control" id="tanggal_mulai"
-                                    name="tanggal_mulai" value="{{ $penetasan->tanggal_mulai }}" required>
+                        @php
+                            $batas_scan = \Carbon\Carbon::parse($penetasan->batas_scan);
+                            $today = \Carbon\Carbon::now();
+                            $isDisabled = $today->greaterThan($batas_scan) || $today->equalTo($batas_scan);
+                        @endphp
+                        @if ($isDisabled)
+                            <div class="modal-body">
+                                <p class="small text-danger"><i class="ri-information-line"></i> Data sudah tidak bisa diubah.</p>
+                                <div class="form-group mb-3">
+                                    <label for="inputDate" class="form-label">Tanggal Mulai <span
+                                            class="text-danger">*</span></label>
+                                    <input type="datetime-local" class="form-control" id="tanggal_mulai"
+                                        name="tanggal_mulai" value="{{ $penetasan->tanggal_mulai }}" readonly>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="inputDate" class="form-label">Jumlah Telur <span
+                                            class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="jumlah_telur" name="jumlah_telur"
+                                        value="{{ $penetasan->jumlah_telur }}" readonly>
+                                </div>
                             </div>
-                            <div class="form-group mb-3">
-                                <label for="inputDate" class="form-label">Jumlah Telur <span
-                                        class="text-danger">*</span></label>
-                                <input type="number" class="form-control" id="jumlah_telur" name="jumlah_telur"
-                                    value="{{ $penetasan->jumlah_telur }}" required>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kembali</button>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kembali</button>
-                            <button type="submit" class="btn btn-primary">Simpan</button>
-                        </div>
+                        @else    
+                            <div class="modal-body">
+                                <div class="form-group mb-3">
+                                    <label for="inputDate" class="form-label">Tanggal Mulai <span
+                                            class="text-danger">*</span></label>
+                                    <input type="datetime-local" class="form-control" id="tanggal_mulai"
+                                        name="tanggal_mulai" value="{{ $penetasan->tanggal_mulai }}" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="inputDate" class="form-label">Jumlah Telur <span
+                                            class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="jumlah_telur" name="jumlah_telur"
+                                        value="{{ $penetasan->jumlah_telur }}" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kembali</button>
+                                <button type="submit" class="btn btn-primary">Simpan</button>
+                            </div>
+                        @endif
                     </form>
                 </div>
             </div>
