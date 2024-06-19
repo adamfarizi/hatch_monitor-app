@@ -117,6 +117,10 @@
                                 style="border-radius: 25px;">
                                 <img id="livePreviewImage" src="{{ $link2 }}" width="100%" height="100%"
                                     scrolling="no" style="border: none; border-radius: 25px; object-fit: cover;">
+                                <button id="fullscreenButton" class="btn btn-lg text-white p-0" onclick="openFullscreen()"
+                                    style="position: absolute; top: 23%; left: 91%; transform: translate(-50%, -50%); font-size: 30px;">
+                                    <i class="ri-fullscreen-fill"></i>
+                                </button>
                                 <p id="connectionStatus" class="pt-5"
                                     style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
                                     <span><i class="ri-information-line"></i></span>Kamera tidak tersambung
@@ -166,7 +170,8 @@
                         <div class="container" style="height:53vh">
                             <p class="small text-muted"><i class="ri-information-line"></i> Perubahan kondisi terkadang
                                 mengalami keterlambatan karena jaringan</p>
-                            <p class="small text-muted"><i class="ri-information-line"></i> Jika status button sudah berubah
+                            <p class="small text-muted"><i class="ri-information-line"></i> Jika status button sudah
+                                berubah
                                 namun kondisi lampu belum berubah, maka reload halaman atau tekan kembali button</p>
                             {{-- 1 Button --}}
                             <form method="POST" action="{{ url('/kontrolRelay') }}">
@@ -317,6 +322,22 @@
     </section>
 @endsection
 @section('js')
+    {{-- Full Screen --}}
+    <script>
+        function openFullscreen() {
+            const elem = document.getElementById('livePreviewImage');
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.mozRequestFullScreen) { // Firefox
+                elem.mozRequestFullScreen();
+            } else if (elem.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { // IE/Edge
+                elem.msRequestFullscreen();
+            }
+        }
+    </script>
+
     {{-- EspCam --}}
     <script>
         // Fungsi untuk memeriksa apakah gambar di URL tertentu dapat diakses
@@ -338,17 +359,20 @@
             var livePreviewContainer = document.querySelector('.live-preview-container');
             var livePreviewImage = document.getElementById('livePreviewImage');
             var connectionStatus = document.getElementById('connectionStatus');
+            var fullscreenButton = document.getElementById('fullscreenButton');
 
             if (isAccessible) {
                 // Jika gambar diakses, tampilkan gambar
                 livePreviewContainer.style.background = 'none'; // Hapus latar belakang hitam
                 livePreviewImage.style.display = 'block'; // Tampilkan gambar
                 connectionStatus.style.display = 'none'; // Sembunyikan pesan kamera tidak tersambung
+                fullscreenButton.style.display = 'block';
             } else {
                 // Jika gambar tidak dapat diakses, tampilkan latar belakang hitam dan pesan kamera tidak tersambung
                 livePreviewContainer.style.background = '#000'; // Latar belakang hitam
                 livePreviewImage.style.display = 'none'; // Sembunyikan gambar
                 connectionStatus.style.display = 'block'; // Tampilkan pesan kamera tidak tersambung
+                fullscreenButton.style.display = 'none';
             }
         });
     </script>
