@@ -107,28 +107,36 @@
                                 Live Preview Alat
                             </div>
                             <div class="col text-end">
-                                <span>
-                                    Hari ini
-                                </span>
+                                <button type="button" class="btn btn-sm btn-link" data-bs-toggle="modal"
+                                    data-bs-target="#modalLink">Perbarui Link Camera
+                                </button>
                             </div>
                         </h5>
+                        <div class="container mb-4">
+                            <div class="bg-secondary text-white p-3" style="border-radius: 10px;">
+                                <p class="mb-0">
+                                    <i class="ri-information-line"></i> Perubahan kondisi terkadang
+                                    mengalami keterlambatan karena jaringan !
+                                </p>
+                            </div>
+                        </div>
                         <div class="container mb-4" style="height: 50vh">
                             <div class="bg-dark h-100 text-center text-white live-preview-container"
                                 style="border-radius: 25px;">
                                 <img id="livePreviewImage" src="{{ $link2 }}" width="100%" height="100%"
                                     scrolling="no" style="border: none; border-radius: 25px; object-fit: cover;">
                                 <button id="fullscreenButton" class="btn btn-lg text-white p-0" onclick="openFullscreen()"
-                                    style="position: absolute; top: 23%; left: 91%; transform: translate(-50%, -50%); font-size: 30px;">
+                                    style="position: absolute; top: 35%; left: 91%; transform: translate(-50%, -50%); font-size: 30px;">
                                     <i class="ri-fullscreen-fill"></i>
                                 </button>
                                 <p id="connectionStatus" class="pt-5"
-                                    style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                                    style="display: none; position: absolute; top: 55%; left: 50%; transform: translate(-50%, -50%);">
                                     <span><i class="ri-information-line"></i></span>Kamera tidak tersambung
                                 </p>
                                 @if (session('status'))
                                     <div class="alert alert-info bg-primary text-light border-0 alert-dismissible fade show"
                                         role="alert"
-                                        style="position: absolute; z-index: 9999; top: 30%; left: 50%; transform: translate(-50%, -50%);">
+                                        style="position: absolute; z-index: 9999; top: 35%; left: 50%; transform: translate(-50%, -50%);">
                                         <i class="ri-information-line"></i>
                                         <b>Status ! </b> {{ session('status') }}
                                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"
@@ -164,19 +172,16 @@
                     <div class="card-body">
                         <h5 class="card-title row">
                             <div class="col">
-                                Kontrol Alat
+                                Kontrol Alat <span class="small text-muted">- alur scan telur</span>
                             </div>
                         </h5>
-                        <div class="container" style="height:53vh">
-                            <p class="small text-muted"><i class="ri-information-line"></i> Perubahan kondisi terkadang
-                                mengalami keterlambatan karena jaringan</p>
-                            <p class="small text-muted"><i class="ri-information-line"></i> Jika status button sudah
-                                berubah
-                                namun kondisi lampu belum berubah, maka reload halaman atau tekan kembali button</p>
+                        <div class="container" style="height:66vh">
+                            <p class="small text-muted">Berikut adalah langkah - langkah sebelum melakukan proses scanning
+                                pada telur ayam :</p>
                             {{-- 1 Button --}}
                             <form method="POST" action="{{ url('/kontrolRelay') }}">
                                 @csrf
-                                <div class="py-2 mb-4">
+                                <div class="py-2">
                                     <p class="small">Lampu Bohlam
                                         <span class="ms-2">
                                             @if ($relay1 === 'On')
@@ -200,6 +205,9 @@
                                                 onclick="window.location.reload()">RELOAD</button>
                                         @endif
                                     </div>
+                                    <p class="small mt-3 text-muted"><i class="ri-information-line"></i> Step 1: Matikan
+                                        lampu
+                                        bohlam untuk memaksimalkan hasil scan telur</p>
                                 </div>
                                 <div class="py-2">
                                     <p class="small">Lampu LED
@@ -225,8 +233,18 @@
                                                 onclick="window.location.reload()">RELOAD</button>
                                         @endif
                                     </div>
+                                    <p class="small mt-3 text-muted">
+                                        <i class="ri-information-line"></i> Step 2: Hidupkan lampu led untuk melakukan
+                                        proses
+                                        candling telur
+                                    </p>
                                 </div>
                             </form>
+
+                            <p class="text-muted" style="font-size: 11px"><i class="ri-information-line"></i> Jika status
+                                button sudah
+                                berubah
+                                namun kondisi lampu belum berubah, maka reload halaman atau tekan kembali button</p>
 
                             {{-- 2 Button --}}
                             {{-- <form method="POST" action="{{ url('/kontrolRelay') }}">
@@ -320,6 +338,39 @@
             </div>
         </div>
     </section>
+
+    {{-- Modal Link --}}
+    <div class="modal fade" id="modalLink" tabindex="-1" aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Link Camera ESP32Cam</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ url('/linkESPCAM') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-group mb-3">
+                            <label for="link1" class="form-label">Link Camera 1 <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="link1" name="link1"
+                                placeholder="exp. http://192.168.1.150" value="{{ $link1 }}" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="link2" class="form-label">Link Camera 2 <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="link2" name="link2"
+                                placeholder="exp. http://192.168.1.150" value="{{ $link2 }}" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('js')
     {{-- Full Screen --}}

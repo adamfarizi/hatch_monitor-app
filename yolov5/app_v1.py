@@ -48,9 +48,10 @@ from utils.torch_utils import select_device, smart_inference_mode
 app = Flask(__name__)
 
 # tambahan
-# Define colors for fertil and infertil
-fertil_color = (176, 96, 11)
-infertil_color = (26, 0, 210)
+CLASS_MAPPING = {
+    0: "fertil",
+    1: "infertil"
+}
 
 @smart_inference_mode()
 def run(
@@ -58,8 +59,8 @@ def run(
     source=ROOT / "data/images",  # file/dir/URL/glob/screen/0(webcam)
     data=ROOT / "data/coco128.yaml",  # dataset.yaml path
     imgsz=(640, 640),  # inference size (height, width)
-    conf_thres=0.35,  # confidence threshold
-    iou_thres=0.6,  # NMS IOU threshold
+    conf_thres=0.25,  # confidence threshold
+    iou_thres=0.45,  # NMS IOU threshold
     max_det=1000,  # maximum detections per image
     device="",  # cuda device, i.e. 0 or 0,1,2,3 or cpu
     view_img=False,  # show results
@@ -83,19 +84,6 @@ def run(
     dnn=False,  # use OpenCV DNN for ONNX inference
     vid_stride=1,  # video frame-rate stride
 ):
-    # tambahan
-    # Initialize counters
-    fertil_counts = {
-        "tinggi": 0,
-        "sedang": 0,
-        "rendah": 0
-    }
-    infertil_counts = {
-        "tinggi": 0,
-        "sedang": 0,
-        "rendah": 0
-    }
-    
     source = str(source)
     save_img = not nosave and not source.endswith(".txt")  # save inference images
     is_file = Path(source).suffix[1:] in (IMG_FORMATS + VID_FORMATS)
@@ -194,39 +182,19 @@ def run(
                 det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0.shape).round()
 
                 # Print results
-                for c in det[:, 5].unique():
-                    n = (det[:, 5] == c).sum()  # detections per class
-                    s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
+                # tambahan
+                for *xyxy, conf, cls in reversed(det):
+                    c = int(cls)  # integer class
+                    label = CLASS_MAPPING[c]  # Get class label from mapping
+                    confidence = float(conf)
+                    confidence_str = f"{confidence:.2f}"
 
                 # Write results
                 for *xyxy, conf, cls in reversed(det):
                     c = int(cls)  # integer class
+                    label = names[c] if hide_conf else f"{names[c]}"
                     confidence = float(conf)
                     confidence_str = f"{confidence:.2f}"
-
-                    # Determine label and color based on class and confidence
-                    if names[c] == "fertil":
-                        if confidence >= 0.9:
-                            label = f"Fertil-Tinggi ({confidence_str})"
-                            fertil_counts["tinggi"] += 1
-                        elif confidence >= 0.7:
-                            label = f"Fertil-Sedang ({confidence_str})"
-                            fertil_counts["sedang"] += 1
-                        else:
-                            label = f"Fertil-Rendah ({confidence_str})"
-                            fertil_counts["rendah"] += 1
-                        color = fertil_color
-                    else:  # "infertil"
-                        if confidence >= 0.9:
-                            label = f"Infertil-Tinggi ({confidence_str})"
-                            infertil_counts["tinggi"] += 1
-                        elif confidence >= 0.7:
-                            label = f"Infertil-Sedang ({confidence_str})"
-                            infertil_counts["sedang"] += 1
-                        else:
-                            label = f"Infertil-Rendah ({confidence_str})"
-                            infertil_counts["rendah"] += 1
-                        color = infertil_color
 
                     if save_csv:
                         write_to_csv(p.name, label, confidence_str)
@@ -238,7 +206,9 @@ def run(
                             f.write(("%g " * len(line)).rstrip() % line + "\n")
 
                     if save_img or save_crop or view_img:  # Add bbox to image
-                        annotator.box_label(xyxy, label, color=color)
+                        c = int(cls)  # integer class
+                        label = None if hide_labels else (names[c] if hide_conf else f"{names[c]} {conf:.2f}")
+                        annotator.box_label(xyxy, label, color=colors(c, True))
                     if save_crop:
                         save_one_box(xyxy, imc, file=save_dir / "crops" / names[c] / f"{p.stem}.jpg", BGR=True)
 
@@ -272,7 +242,7 @@ def run(
                     vid_writer[i].write(im0)
 
         # Print hasil terminal (inference-only)
-        # LOGGER.info(f"{s}{'' if len(det) else '(no detections), '}{dt[1].dt * 1E3:.1f}ms")
+        LOGGER.info(f"{s}{'' if len(det) else '(no detections), '}{dt[1].dt * 1E3:.1f}ms")
 
     # Print results speed terminal
     t = tuple(x.t / seen * 1e3 for x in dt)  # speeds per image
@@ -280,24 +250,19 @@ def run(
     if save_txt or save_img:
         s = f"\n{len(list(save_dir.glob('labels/*.txt')))} labels saved to {save_dir / 'labels'}" if save_txt else ""
         # LOGGER.info(f"Results saved to {colorstr('bold', save_dir)}{s}")
-    
-    # Print counts for fertil and infertil categories - custom
-    LOGGER.info(f"Infertil counts: Tinggi={infertil_counts['tinggi']}, Sedang={infertil_counts['sedang']}, Rendah={infertil_counts['rendah']}")    
-    LOGGER.info(f"Fertil counts: Tinggi={fertil_counts['tinggi']}, Sedang={fertil_counts['sedang']}, Rendah={fertil_counts['rendah']}")
-    
     if update:
         strip_optimizer(weights[0])  # update model (to fix SourceChangeWarning)
 
     # Script untuk ubah hasil ke json
     # num_detections = sum(len(det) for det in pred) if isinstance(pred, list) else len(pred)
-    
     # return num_detections
     output = {
         "predictions": [
             {
-                "infertil": infertil_counts,
-                "fertil": fertil_counts,
+                "class": CLASS_MAPPING[int(cls)],
+                "confidence": float(conf),
             }
+            for *xyxy, conf, cls in det
         ]
     }
     return output
@@ -309,8 +274,8 @@ def parse_opt():
     parser.add_argument("--source", type=str, default=ROOT / "data/images", help="file/dir/URL/glob/screen/0(webcam)")
     parser.add_argument("--data", type=str, default=ROOT / "data/coco128.yaml", help="(optional) dataset.yaml path")
     parser.add_argument("--imgsz", "--img", "--img-size", nargs="+", type=int, default=[640], help="inference size h,w")
-    parser.add_argument("--conf-thres", type=float, default=0.35, help="confidence threshold")
-    parser.add_argument("--iou-thres", type=float, default=0.6, help="NMS IoU threshold")
+    parser.add_argument("--conf-thres", type=float, default=0.25, help="confidence threshold")
+    parser.add_argument("--iou-thres", type=float, default=0.45, help="NMS IoU threshold")
     parser.add_argument("--max-det", type=int, default=1000, help="maximum detections per image")
     parser.add_argument("--device", default="", help="cuda device, i.e. 0 or 0,1,2,3 or cpu")
     parser.add_argument("--view-img", action="store_true", help="show results")

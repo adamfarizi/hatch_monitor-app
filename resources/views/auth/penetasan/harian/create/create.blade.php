@@ -52,12 +52,77 @@
                                 class="text-danger">*</span></label>
                         <div class="col-sm-10">
                             <div class="row">
-                                <div class="col input-group mb-3">
-                                    <input type="number" class="form-control" aria-describedby="basic-addon2"
-                                        id="jumlah_infertil" name="jumlah_infertil" value="{{ $infertil }}" readonly>
-                                    <span class="input-group-text" id="basic-addon2">Telur</span>
+                                <label></label>
+                                <div class="col">
+                                    <label for="infertil_rendah" class="col-form-label">Akurasi Rendah <span
+                                        class="text-danger">*</span></label>
+                                    <div class="input-group mb-3">
+                                        <input type="number" class="form-control" aria-describedby="basic-addon2"
+                                            id="infertil_rendah" name="infertil_rendah" value="{{ $infertilRendah }}" readonly>
+                                        <span class="input-group-text" id="basic-addon2">Telur</span>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <label for="infertil_sedang" class="col-form-label">Akurasi Sedang <span
+                                        class="text-danger">*</span></label>
+                                    <div class="input-group mb-3">
+                                        <input type="number" class="form-control" aria-describedby="basic-addon2"
+                                            id="infertil_sedang" name="infertil_sedang" value="{{ $infertilSedang }}" readonly>
+                                        <span class="input-group-text" id="basic-addon2">Telur</span>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <label for="infertil_tinggi" class="col-form-label">Akurasi Tinggi <span
+                                        class="text-danger">*</span></label>
+                                    <div class="input-group mb-3">
+                                        <input type="number" class="form-control" aria-describedby="basic-addon2"
+                                            id="infertil_tinggi" name="infertil_tinggi" value="{{ $infertilTinggi }}" readonly>
+                                        <span class="input-group-text" id="basic-addon2">Telur</span>
+                                    </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="inputEmail3" class="col-sm-2 col-form-label">Fertil <span
+                                class="text-danger">*</span></label>
+                        <div class="col-sm-10">
+                            <div class="row">
+                                <label></label>
+                                <div class="col">
+                                    <label for="fertil_rendah" class="col-form-label">Akurasi Rendah <span
+                                        class="text-danger">*</span></label>
+                                    <div class="input-group mb-3">
+                                        <input type="number" class="form-control" aria-describedby="basic-addon2"
+                                            id="fertil_rendah" name="fertil_rendah" value="{{ $fertilRendah }}" readonly>
+                                        <span class="input-group-text" id="basic-addon2">Telur</span>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <label for="fertil_sedang" class="col-form-label">Akurasi Sedang <span
+                                        class="text-danger">*</span></label>
+                                    <div class="input-group mb-3">
+                                        <input type="number" class="form-control" aria-describedby="basic-addon2"
+                                            id="fertil_sedang" name="fertil_sedang" value="{{ $fertilSedang }}" readonly>
+                                        <span class="input-group-text" id="basic-addon2">Telur</span>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <label for="fertil_tinggi" class="col-form-label">Akurasi Tinggi <span
+                                        class="text-danger">*</span></label>
+                                    <div class="input-group mb-3">
+                                        <input type="number" class="form-control" aria-describedby="basic-addon2"
+                                            id="fertil_tinggi" name="fertil_tinggi" value="{{ $fertilTinggi }}" readonly>
+                                        <span class="input-group-text" id="basic-addon2">Telur</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="inputEmail3" class="col-sm-2 col-form-label">Hasil Scan <span
+                            class="text-danger">*</span></label>
+                        <div class="col-sm-10">
                             <div class="container mb-3" style="max-height: 40vh">
                                 <div class="col input-group">
                                     <input type="hidden" class="form-control" aria-describedby="basic-addon2"

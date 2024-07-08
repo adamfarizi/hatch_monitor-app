@@ -27,8 +27,8 @@ class Harian extends Model
         return $this->belongsTo(Penetasan::class, 'id_penetasan', 'id_penetasan');
     }
 
-    public function infertil()
+    public function scan()
     {
-        return $this->hasMany(Infertil::class, 'id_harian', 'id_harian');
+        return $this->hasMany(Scan::class, 'id_harian', 'id_harian');
     }
 }

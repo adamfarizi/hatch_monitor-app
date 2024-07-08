@@ -55,15 +55,100 @@
                                 class="text-danger">*</span></label>
                         <div class="col-sm-10">
                             <div class="row">
-                                <div class="col input-group">
-                                    <input type="number" class="form-control text-muted" aria-describedby="basic-addon2"
-                                        id="jumlah_infertil" name="jumlah_infertil" value="{{ $infertil->jumlah_infertil }}"
-                                        readonly>
-                                    <span class="input-group-text" id="basic-addon2">Telur</span>
+                                <label></label>
+                                <div class="col">
+                                    <label for="infertil_rendah" class="col-form-label">Akurasi Rendah <span
+                                            class="text-danger">*</span></label>
+                                    <div class="input-group mb-3">
+                                        <input type="number" class="form-control" aria-describedby="basic-addon2"
+                                            id="infertil_rendah" name="infertil_rendah"
+                                            value="{{ $scan->infertil_rendah }}" readonly>
+                                        <span class="input-group-text" id="basic-addon2">Telur</span>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <label for="infertil_sedang" class="col-form-label">Akurasi Sedang <span
+                                            class="text-danger">*</span></label>
+                                    <div class="input-group mb-3">
+                                        <input type="number" class="form-control" aria-describedby="basic-addon2"
+                                            id="infertil_sedang" name="infertil_sedang" value="{{ $scan->infertil_sedang }}"
+                                            readonly>
+                                        <span class="input-group-text" id="basic-addon2">Telur</span>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <label for="infertil_tinggi" class="col-form-label">Akurasi Tinggi <span
+                                            class="text-danger">*</span></label>
+                                    <div class="input-group mb-3">
+                                        <input type="number" class="form-control" aria-describedby="basic-addon2"
+                                            id="infertil_tinggi" name="infertil_tinggi" value="{{ $scan->infertil_tinggi }}"
+                                            readonly>
+                                        <span class="input-group-text" id="basic-addon2">Telur</span>
+                                    </div>
                                 </div>
                             </div>
-                            <p class="small text-danger mt-2 mb-0"><i class="ri-information-line"></i> Data infertil tidak bisa
-                                diubah.</p>
+                            <p class="small text-danger mt-2 mb-0"><i class="ri-information-line"></i> Data infertil tidak
+                                bisa diubah.</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="inputEmail3" class="col-sm-2 col-form-label">Fertil <span
+                                class="text-danger">*</span></label>
+                        <div class="col-sm-10">
+                            <div class="row">
+                                <label></label>
+                                <div class="col">
+                                    <label for="fertil_rendah" class="col-form-label">Akurasi Rendah <span
+                                            class="text-danger">*</span></label>
+                                    <div class="input-group mb-3">
+                                        <input type="number" class="form-control" aria-describedby="basic-addon2"
+                                            id="fertil_rendah" name="fertil_rendah" value="{{ $scan->fertil_rendah }}" readonly>
+                                        <span class="input-group-text" id="basic-addon2">Telur</span>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <label for="fertil_sedang" class="col-form-label">Akurasi Sedang <span
+                                            class="text-danger">*</span></label>
+                                    <div class="input-group mb-3">
+                                        <input type="number" class="form-control" aria-describedby="basic-addon2"
+                                            id="fertil_sedang" name="fertil_sedang" value="{{ $scan->fertil_sedang }}"
+                                            readonly>
+                                        <span class="input-group-text" id="basic-addon2">Telur</span>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <label for="fertil_tinggi" class="col-form-label">Akurasi Tinggi <span
+                                            class="text-danger">*</span></label>
+                                    <div class="input-group mb-3">
+                                        <input type="number" class="form-control" aria-describedby="basic-addon2"
+                                            id="fertil_tinggi" name="fertil_tinggi" value="{{ $scan->fertil_tinggi }}"
+                                            readonly>
+                                        <span class="input-group-text" id="basic-addon2">Telur</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="small text-danger mt-2"><i class="ri-information-line"></i> Data fertil tidak
+                                bisa diubah.</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="inputEmail3" class="col-sm-2 col-form-label">Hasil Scan <span
+                                class="text-danger">*</span></label>
+                        <div class="col-sm-10">
+                            <div class="container mb-3" style="max-height: 40vh">
+                                <div class="bg-dark h-100 text-center text-white"
+                                    style="border-radius: 25px; position: relative; overflow: hidden; max-height: 40vh; max-width:450px;">
+                                    @if ($scan->bukti_scan)
+                                        <img src="{{ asset('images/scan/' . $scan->bukti_scan) }}" class="img-fluid"
+                                            alt="Bukti Harian"
+                                            style="width: 100%; height: 40vh; object-fit: cover; border-radius: 25px;">
+                                    @else
+                                        <img src="{{ asset('images/capture/' . $harian->bukti_harian) }}" class="img-fluid"
+                                            alt="Bukti Harian"
+                                            style="width: 100%; height: 40vh; object-fit: cover; border-radius: 25px;">
+                                    @endif
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="row mb-3">

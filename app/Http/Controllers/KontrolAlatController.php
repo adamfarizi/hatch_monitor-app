@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Master;
 use App\Models\Monitor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 use Yajra\DataTables\Facades\DataTables;
 
 class KontrolAlatController extends Controller
@@ -35,20 +36,20 @@ class KontrolAlatController extends Controller
         try {
             $channelId = '2564192';
             $apiKey = 'UA1FQEG08D4IHX3K';
-        
+
             // URL untuk field1
             $urlfield1 = "https://api.thingspeak.com/channels/{$channelId}/fields/1.json?api_key={$apiKey}&results=1";
             // URL untuk field2
             $urlfield2 = "https://api.thingspeak.com/channels/{$channelId}/fields/2.json?api_key={$apiKey}&results=1";
-        
+
             // Mengambil data untuk field1
             $responsefield1 = Http::get($urlfield1);
             $statusfield1 = $responsefield1->json();
-        
+
             // Mengambil data untuk field2
             $responsefield2 = Http::get($urlfield2);
             $statusfield2 = $responsefield2->json();
-        
+
             // Memeriksa dan mengambil nilai terbaru untuk field1
             if (isset($statusfield1['feeds']) && !empty($statusfield1['feeds'])) {
                 $latestDatafield1 = $statusfield1['feeds'][0];
@@ -60,7 +61,7 @@ class KontrolAlatController extends Controller
             } else {
                 $relay1 = null;
             }
-        
+
             // Memeriksa dan mengambil nilai terbaru untuk field2
             if (isset($statusfield2['feeds']) && !empty($statusfield2['feeds'])) {
                 $latestDatafield2 = $statusfield2['feeds'][0];
@@ -72,7 +73,7 @@ class KontrolAlatController extends Controller
             } else {
                 $relay2 = null;
             }
-        
+
         } catch (\Exception $e) {
             Log::error('Error ketika mengirim permintaan ke ThingSpeak: ' . $e->getMessage());
         }
@@ -121,17 +122,17 @@ class KontrolAlatController extends Controller
             $channelId = '2564192';
             $readApiKey = 'UA1FQEG08D4IHX3K';
             $writeApiKey = 'GID60J89SWH0OCCL';
-        
+
             // URL untuk mengambil data terbaru
             $latestDataUrl = "https://api.thingspeak.com/channels/{$channelId}/feeds.json?api_key={$readApiKey}&results=1";
-        
+
             // Mengambil data terbaru dari ThingSpeak
             $latestDataResponse = Http::get($latestDataUrl);
             $latestData = $latestDataResponse->json()['feeds'][0]; // Ambil data terbaru
-        
+
             // Inisialisasi data untuk dikirim
             $data = [];
-        
+
             // Sesuaikan data berdasarkan relayState
             if ($relayState == 'relay1_on' || $relayState == 'relay1_off') {
                 $data['field1'] = $relayState == 'relay1_on' ? 1 : 0;  // Relay 1 ON atau OFF
@@ -142,23 +143,44 @@ class KontrolAlatController extends Controller
                 // Ambil nilai field1 dari data terbaru
                 $data['field1'] = isset($latestData['field1']) ? $latestData['field1'] : 0;
             }
-        
+
             // Kirim permintaan untuk memperbarui field
             $writeUrl = "https://api.thingspeak.com/update?api_key={$writeApiKey}";
             $writeResponse = Http::post($writeUrl, $data);
-            
+
             if ($writeResponse->ok()) {
                 if ($writeResponse->body() == 0) {
                     return redirect('/kontrolalat')->with('loading', 'Sistem sedang memuat, ulangi proses!');
                 } else {
                     return redirect('/kontrolalat')->with('status', 'Kondisi relay telah diubah!');
                 }
-            } 
-            else {
+            } else {
                 return redirect('/kontrolalat')->with('error', 'Gagal memperbarui kondisi relay!');
             }
         } catch (\Exception $e) {
             Log::error('Error ketika mengirim permintaan ke ThingSpeak: ' . $e->getMessage());
-        }              
+        }
+    }
+
+    public function linkESPCAM(Request $request)
+    {
+        $request->validate([
+            'link1' => 'required|url',
+            'link2' => 'required|url',
+        ]);
+
+        $link = Master::first();
+
+        // Cek dan update nilai link jika diubah
+        if ($request->filled('link1')) {
+            $link->link1 = $request->input('link1');
+        }
+        if ($request->filled('link2')) {
+            $link->link2 = $request->input('link2');
+        }
+        
+        $link->save();
+
+        return redirect('/kontrolalat')->with('status', 'Link Camera sudah diperbarui!');
     }
 }

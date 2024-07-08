@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             PeternakSeeder::class,
+            MasterSeeder::class,
             // PenetasanSeeder::class,
         ]);
         // Monitor::factory(500)->create();

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Harian;
-use App\Models\Infertil;
+use App\Models\Scan;
 use App\Models\Penetasan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -132,15 +132,15 @@ class PenetasanController extends Controller
     {
         try {
             $id_harian_penetasan = Harian::where('id_penetasan', $id_penetasan)->pluck('id_harian');
-            $infertilList = Infertil::whereIn('id_harian', $id_harian_penetasan)->get();
+            $scanList = Scan::whereIn('id_harian', $id_harian_penetasan)->get();
             $harianList = Harian::where('id_penetasan', $id_penetasan)->get();
 
             // Hapus gambar jika ada dan hapus data Harian
-            foreach ($infertilList as $infertil) {
-                if (File::exists(public_path('images/scan/' . $infertil->bukti_infertil))) {
-                    File::delete(public_path('images/scan/' . $infertil->bukti_infertil));
+            foreach ($scanList as $scan) {
+                if (File::exists(public_path('images/scan/' . $scan->bukti_scan))) {
+                    File::delete(public_path('images/scan/' . $scan->bukti_scan));
                 }
-                $infertil->delete();
+                $scan->delete();
             }
 
             foreach ($harianList as $harian) {

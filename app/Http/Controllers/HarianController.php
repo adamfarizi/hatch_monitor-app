@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Harian;
-use App\Models\Infertil;
 use App\Models\Penetasan;
+use App\Models\Scan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -19,7 +19,7 @@ class HarianController extends Controller
 
         $harians = Harian::where('id_penetasan', $id_penetasan)
             ->orderByDesc('waktu_harian')
-            ->with(['penetasan', 'infertil'])
+            ->with(['penetasan', 'scan'])
             ->get();
 
         $penetasan = Penetasan::where('id_penetasan', $id_penetasan)
@@ -76,8 +76,12 @@ class HarianController extends Controller
         $today = Carbon::now()->startOfDay();
 
         if ($batas_scan->lt($today)) {
-            $infertilCount = 0;
-            $fertilCount = 0;
+            $infertilRendah = 0;
+            $infertilSedang = 0;
+            $infertilTinggi = 0;
+            $fertilRendah = 0;
+            $fertilSedang = 0;
+            $fertilTinggi = 0;
             $scanFileName = null;
 
             // Move the file to the new destination folder
@@ -96,14 +100,26 @@ class HarianController extends Controller
             $responseData = $response->json();
 
             //* Mengambil data fertil dan infertil
-            $infertilCount = 0;
-            $fertilCount = 0;
+            $infertilRendah = 0;
+            $infertilSedang = 0;
+            $infertilTinggi = 0;
+            $fertilRendah = 0;
+            $fertilSedang = 0;
+            $fertilTinggi = 0;
 
-            foreach ($responseData['predictions'] as $prediction) {
-                if ($prediction['class'] === 'infertil') {
-                    $infertilCount++;
-                } elseif ($prediction['class'] === 'fertil') {
-                    $fertilCount++;
+            if (!empty($responseData['predictions'])) {
+                $prediction = $responseData['predictions'][0];
+            
+                if (isset($prediction['fertil'])) {
+                    $fertilRendah += $prediction['fertil']['rendah'];
+                    $fertilSedang += $prediction['fertil']['sedang'];
+                    $fertilTinggi += $prediction['fertil']['tinggi'];
+                }
+            
+                if (isset($prediction['infertil'])) {
+                    $infertilRendah += $prediction['infertil']['rendah'];
+                    $infertilSedang += $prediction['infertil']['sedang'];
+                    $infertilTinggi += $prediction['infertil']['tinggi'];
                 }
             }
 
@@ -131,14 +147,26 @@ class HarianController extends Controller
             $responseData = $response->json();
 
             //* Mengambil data fertil dan infertil
-            $infertilCount = 0;
-            $fertilCount = 0;
+            $infertilRendah = 0;
+            $infertilSedang = 0;
+            $infertilTinggi = 0;
+            $fertilRendah = 0;
+            $fertilSedang = 0;
+            $fertilTinggi = 0;
 
-            foreach ($responseData['predictions'] as $prediction) {
-                if ($prediction['class'] === 'infertil') {
-                    $infertilCount++;
-                } elseif ($prediction['class'] === 'fertil') {
-                    $fertilCount++;
+            if (!empty($responseData['predictions'])) {
+                $prediction = $responseData['predictions'][0];
+            
+                if (isset($prediction['fertil'])) {
+                    $fertilRendah += $prediction['fertil']['rendah'];
+                    $fertilSedang += $prediction['fertil']['sedang'];
+                    $fertilTinggi += $prediction['fertil']['tinggi'];
+                }
+            
+                if (isset($prediction['infertil'])) {
+                    $infertilRendah += $prediction['infertil']['rendah'];
+                    $infertilSedang += $prediction['infertil']['sedang'];
+                    $infertilTinggi += $prediction['infertil']['tinggi'];
                 }
             }
 
@@ -148,7 +176,7 @@ class HarianController extends Controller
             $latestExp = $this->getLatestExpFolder($sourceFolder);
 
             if ($latestExp) {
-                $imageFiles = glob($latestExp . '/*.jpg'); // Hanya memindahkan file gambar PNG
+                $imageFiles = glob($latestExp . '/*.jpg');
                 foreach ($imageFiles as $image) {
                     $scanFileName = date('H-i_d-m-Y', time()) . '.png';
                     copy($image, $destinationFolder . '/' . $scanFileName);
@@ -162,7 +190,12 @@ class HarianController extends Controller
             'penetasan' => $penetasan,
             'suhu' => $suhu,
             'kelembaban' => $kelembaban,
-            'infertil' => $infertilCount,
+            'infertilRendah' => $infertilRendah,
+            'infertilSedang' => $infertilSedang,
+            'infertilTinggi' => $infertilTinggi,
+            'fertilRendah' => $fertilRendah,
+            'fertilSedang' => $fertilSedang,
+            'fertilTinggi' => $fertilTinggi,
             'imageCapture' => $captureFileName,
             'imageScan' => $scanFileName,
         ], $data);
@@ -181,6 +214,7 @@ class HarianController extends Controller
 
     public function create(Request $request, $id_penetasan)
     {
+
         try {
 
             $request->validate([
@@ -192,7 +226,12 @@ class HarianController extends Controller
                 'kelembaban_radio' => 'required',
                 'kelembaban_scan' => 'required_if:kelembaban_radio,scan',
                 'kelembaban_manual' => 'required_if:kelembaban_radio,manual',
-                'jumlah_infertil' => 'required',
+                'infertil_rendah' => 'required',
+                'infertil_sedang' => 'required',
+                'infertil_tinggi' => 'required',
+                'fertil_rendah' => 'required',
+                'fertil_sedang' => 'required',
+                'fertil_tinggi' => 'required',
                 'bukti_capture' => 'required',
             ]);
 
@@ -214,14 +253,18 @@ class HarianController extends Controller
                 'bukti_harian' => $request->input('bukti_capture'),
             ]);
 
-            $bukti_infertil = $request->input('bukti_scan') ?? $request->input('bukti_capture');
+            $bukti_scan = $request->input('bukti_scan') ?? $request->input('bukti_capture');
 
-            $infertil = Infertil::create([
+            $scan = Scan::create([
                 'id_harian' => $harian->id_harian,
-                'waktu_infertil' => $request->input('waktu_harian'),
-                'nomor_telur' => null,
-                'jumlah_infertil' => $request->input('jumlah_infertil'),
-                'bukti_infertil' => $bukti_infertil,
+                'waktu_scan' => $request->input('waktu_harian'),
+                'infertil_rendah' => $request->input('infertil_rendah'),
+                'infertil_sedang' => $request->input('infertil_sedang'),
+                'infertil_tinggi' => $request->input('infertil_tinggi'),
+                'fertil_rendah' => $request->input('fertil_rendah'),
+                'fertil_sedang' => $request->input('fertil_sedang'),
+                'fertil_tinggi' => $request->input('fertil_tinggi'),
+                'bukti_scan' => $bukti_scan,
             ]);
 
             $rata_rata_suhu = Harian::where('id_penetasan', $id_penetasan)->avg('suhu_harian');
@@ -234,7 +277,9 @@ class HarianController extends Controller
             $today = Carbon::now()->startOfDay();
 
             // Ambil jumlah_infertil terakhir dari model Harian
-            $jumlah_infertil_terakhir = $penetasan->harian()->orderBy('created_at', 'desc')->first()->jumlah_infertil;
+            $jumlah_infertil_terakhir = $penetasan->harian()->orderBy('created_at', 'desc')->first()->infertil_rendah +
+                $penetasan->harian()->orderBy('created_at', 'desc')->first()->infertil_sedang +
+                $penetasan->harian()->orderBy('created_at', 'desc')->first()->infertil_tinggi;
 
             //* Create prediksi menetas
             if ($batas_scan->addDay()->eq($today)) {
@@ -277,7 +322,7 @@ class HarianController extends Controller
         $harian = Harian::where('id_harian', $id_harian)
             ->first();
 
-        $infertil = Infertil::where('id_harian', $id_harian)
+        $scan = Scan::where('id_harian', $id_harian)
             ->first();
 
         // Data Suhu
@@ -299,7 +344,7 @@ class HarianController extends Controller
         return view('auth.penetasan.harian.edit.edit', [
             'penetasan' => $penetasan,
             'harian' => $harian,
-            'infertil' => $infertil,
+            'scan' => $scan,
             'suhu' => $suhu,
             'kelembaban' => $kelembaban,
         ], $data);
@@ -391,7 +436,7 @@ class HarianController extends Controller
     public function delete($id_penetasan, $id_harian)
     {
         try {
-            $infertil = Infertil::where('id_harian', $id_harian)->first();
+            $scan = Scan::where('id_harian', $id_harian)->first();
 
             $harian = Harian::where('id_harian', $id_harian)->first();
             if (!$harian) {
@@ -403,17 +448,31 @@ class HarianController extends Controller
                 File::delete('images/capture/' . $harian->bukti_harian);
             }
 
-            if (File::exists('images/scan/' . $infertil->bukti_infertil)) {
-                File::delete('images/scan/' . $infertil->bukti_infertil);
+            if (File::exists('images/scan/' . $scan->bukti_scan)) {
+                File::delete('images/scan/' . $scan->bukti_scan);
             }
 
             $penetasan = Penetasan::where('id_penetasan', $id_penetasan)->first();
+
+            // Hitung kembali prediksi menetas setelah menghapus data harian dan infertil
+            // $jumlah_infertil_terakhir = 0;
+            // $previous_harian = $penetasan->harian()->orderBy('created_at', 'desc')->skip(1)->first();
+
+            // if ($previous_harian) {
+            //     $jumlah_infertil_terakhir = $previous_harian->infertil_rendah +
+            //         $previous_harian->infertil_sedang +
+            //         $previous_harian->infertil_tinggi;
+            // }
+
+            // $prediksi_menetas = $penetasan->jumlah_telur - $jumlah_infertil_terakhir;
+
+            // Update data penetasan setelah penghapusan
             Penetasan::where('id_penetasan', $id_penetasan)->update([
                 'total_menetas' => $penetasan->total_menetas - $harian->menetas,
-                // 'prediksi_menetas' => $penetasan->prediksi_menetas + $infertil->jumlah_infertil
+                // 'prediksi_menetas' => $prediksi_menetas
             ]);
 
-            $infertil->delete();
+            $scan->delete();
             $harian->delete();
 
             $rata_rata_suhu = Harian::where('id_penetasan', $id_penetasan)->avg('suhu_harian');

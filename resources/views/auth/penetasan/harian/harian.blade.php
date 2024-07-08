@@ -170,21 +170,54 @@
                                                     <td>:</td>
                                                     <td>{{ $harian->kelembaban_harian }} %</td>
                                                 </tr>
-                                                @foreach ($harian->infertil as $infertil)
+                                                @foreach ($harian->scan as $scan)
                                                     <tr>
                                                         <td colspan="3">
-                                                            <p class="fw-semibold mb-0">Scan</p>
-                                                            <ul>
-                                                                {{-- <li>Nomor Telur : A1, B2, B3</li> --}}
-                                                                <li>Jumlah Infertil : {{ $infertil->jumlah_infertil }}
-                                                                    telur</li>
-                                                                <li>
-                                                                    <a class="" href="#" data-bs-toggle="modal"
-                                                                        data-bs-target="#buktiScan{{ $harian->id_harian }}">
-                                                                        <i class="bi bi-camera-fill me-1"></i>Bukti
-                                                                        scan</a>
-                                                                </li>
-                                                            </ul>
+                                                            <p class="fw-semibold mb-0">Hasil Scan</p>
+                                                            <div class="row mb-0">
+                                                                <div class="col mb-0">
+                                                                    <ul>
+                                                                        <li class="mb-1"><span class="badge rounded-pill bg-danger">Infertil</span>
+                                                                            <ul style="padding-left: 1rem">
+                                                                                <li>Akurasi Rendah :
+                                                                                    {{ $scan->infertil_rendah }} telur
+                                                                                </li>
+                                                                                <li>Akurasi Sedang :
+                                                                                    {{ $scan->infertil_sedang }} telur
+                                                                                </li>
+                                                                                <li>Akurasi Tinggi :
+                                                                                    {{ $scan->infertil_tinggi }} telur
+                                                                                </li>
+                                                                            </ul>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                                <div class="col mb-0">
+                                                                    <ul>
+                                                                        <li class="mb-1"><span class="badge rounded-pill bg-primary">Fertil</span>
+                                                                            <ul style="padding-left: 1rem">
+                                                                                <li>Akurasi Rendah :
+                                                                                    {{ $scan->fertil_rendah }} telur
+                                                                                </li>
+                                                                                <li>Akurasi Sedang :
+                                                                                    {{ $scan->fertil_sedang }} telur
+                                                                                </li>
+                                                                                <li>Akurasi Tinggi :
+                                                                                    {{ $scan->fertil_tinggi }} telur
+                                                                                </li>
+                                                                            </ul>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <a class="" href="#" data-bs-toggle="modal"
+                                                                data-bs-target="#buktiScan{{ $harian->id_harian }}">
+                                                                <i class="bi bi-camera-fill me-1"></i>Bukti
+                                                                scan</a>
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -271,14 +304,14 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body d-flex justify-content-center">
-                        @foreach ($harian->infertil as $infertil)
+                        @foreach ($harian->scan as $scan)
                             <div class="bg-dark text-center text-white"
                                 style="border-radius: 25px; position: relative; overflow: hidden; max-height: 80vh; max-width: 100%;">
                                 @php
-                                    $scanPath = public_path('images/scan/' . $infertil->bukti_infertil);
-                                    $capturePath = asset('images/capture/' . $infertil->bukti_infertil);
+                                    $scanPath = public_path('images/scan/' . $scan->bukti_scan);
+                                    $capturePath = asset('images/capture/' . $scan->bukti_scan);
                                     $imageUrl = file_exists($scanPath)
-                                        ? asset('images/scan/' . $infertil->bukti_infertil)
+                                        ? asset('images/scan/' . $scan->bukti_scan)
                                         : $capturePath;
                                 @endphp
                                 <img src="{{ $imageUrl }}" class="img-fluid" alt="Bukti Harian"

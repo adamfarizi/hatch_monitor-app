@@ -5,18 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Infertil extends Model
+class Scan extends Model
 {
     use HasFactory;
-    protected $table = 'infertil';
-    protected $primaryKey = 'id_infertil';
+    protected $table = 'scan';
+    protected $primaryKey = 'id_scan';
     public $timestamps = true;
     protected $fillable = [
         'id_harian', 
-        'waktu_infertil', 
-        'nomor_telur', 
-        'jumlah_infertil',
-        'bukti_infertil',
+        'waktu_scan', 
+        'infertil_rendah',
+        'infertil_sedang',
+        'infertil_tinggi',
+        'fertil_rendah',
+        'fertil_sedang',
+        'fertil_tinggi',
+        'bukti_scan',
     ];
 
     // Relationship with Harian
