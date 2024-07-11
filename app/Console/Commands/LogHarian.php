@@ -58,50 +58,48 @@ class LogHarian extends Command
         Logger::info('LogHarian command completed');
     }
 
-    // protected function captureImage()
-    // {
-    //     try {
-    //         $link = Master::pluck('link1')->first();
-
-    //         if (!$link) {
-    //             Log::error('No link found in Master');
-    //             return null;
-    //         }
-
-    //         $response = Http::get($link . '/capture');
-    //         if ($response->ok()) {
-    //             sleep(5); // Tunggu 5 detik untuk memastikan gambar tersimpan
-    //             $imageUrl = $link . '/saved-photo'; // Ganti dengan URL gambar tersimpan
-    //             $imageResponse = Http::get($imageUrl);
-    //             return $imageResponse->body();
-    //         }
-    //     } catch (\Exception $e) {
-    //         Log::error('Error capturing image: ' . $e->getMessage());
-    //     }
-
-    //     return null;
-    // }
-
     protected function captureImage()
     {
         try {
-            // Path untuk gambar dummy
-            $dummyImagePath = public_path('images/dummy/example2.png');
+            $link = Master::pluck('link1')->first();
 
-            // Membaca isi gambar dummy dari path
-            $imageData = file_get_contents($dummyImagePath);
+            if (!$link) {
+                Log::error('No link found in Master');
+                return null;
+            }
 
-            if ($imageData) {
-                return $imageData;
-            } else {
-                Logger::error('Failed to read dummy image data from path');
+            $response = Http::get($link . '/capture');
+            if ($response->ok()) {
+                sleep(5);
+                $imageUrl = $link . '/saved-photo';
+                $imageResponse = Http::get($imageUrl);
+                return $imageResponse->body();
             }
         } catch (\Exception $e) {
-            Logger::error('Error capturing image from webcam: ' . $e->getMessage());
+            Log::error('Error capturing image: ' . $e->getMessage());
         }
 
         return null;
     }
+
+    // protected function captureImage()
+    // {
+    //     try {
+    //         $dummyImagePath = public_path('images/dummy/example2.png');
+
+    //         $imageData = file_get_contents($dummyImagePath);
+
+    //         if ($imageData) {
+    //             return $imageData;
+    //         } else {
+    //             Logger::error('Failed to read dummy image data from path');
+    //         }
+    //     } catch (\Exception $e) {
+    //         Logger::error('Error capturing image from webcam: ' . $e->getMessage());
+    //     }
+
+    //     return null;
+    // }
 
     protected function sendImageToFlask($imageData)
     {
