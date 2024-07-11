@@ -19,3 +19,4 @@ yarn-error.log
 /.vscode
 /public/images/capture/*
 /public/images/scan/*
+/public/images/log/*
