@@ -82,6 +82,7 @@ class HarianController extends Controller
             $fertilRendah = 0;
             $fertilSedang = 0;
             $fertilTinggi = 0;
+            $unknown = 0;
             $scanFileName = null;
 
             // Move the file to the new destination folder
@@ -122,6 +123,11 @@ class HarianController extends Controller
                     $infertilTinggi += $prediction['infertil']['tinggi'];
                 }
             }
+
+            //* Menghitung data unknown
+            $total_telur = $penetasan->jumlah_telur;
+            $total_scan = $infertilRendah + $infertilSedang + $infertilTinggi + $fertilRendah + $fertilSedang + $fertilTinggi;
+            $unknown = $total_telur - $total_scan;
 
             //* Memindahkan gambar hasil scan YOLO ke folder public/images/scan
             $sourceFolder = base_path('yolov5/runs/detect/');
@@ -170,6 +176,11 @@ class HarianController extends Controller
                 }
             }
 
+            //* Menghitung data unknown
+            $total_telur = $penetasan->jumlah_telur;
+            $total_scan = $infertilRendah + $infertilSedang + $infertilTinggi + $fertilRendah + $fertilSedang + $fertilTinggi;
+            $unknown = $total_telur - $total_scan;
+
             //* Memindahkan gambar hasil scan YOLO ke folder public/images/scan
             $sourceFolder = base_path('yolov5/runs/detect/');
             $destinationFolder = public_path('images/scan/');
@@ -196,6 +207,7 @@ class HarianController extends Controller
             'fertilRendah' => $fertilRendah,
             'fertilSedang' => $fertilSedang,
             'fertilTinggi' => $fertilTinggi,
+            'unknown' => $unknown,
             'imageCapture' => $captureFileName,
             'imageScan' => $scanFileName,
         ], $data);
@@ -232,6 +244,7 @@ class HarianController extends Controller
                 'fertil_rendah' => 'required',
                 'fertil_sedang' => 'required',
                 'fertil_tinggi' => 'required',
+                'unknown' => 'required',
                 'bukti_capture' => 'required',
             ]);
 
@@ -264,6 +277,7 @@ class HarianController extends Controller
                 'fertil_rendah' => $request->input('fertil_rendah'),
                 'fertil_sedang' => $request->input('fertil_sedang'),
                 'fertil_tinggi' => $request->input('fertil_tinggi'),
+                'unknown' => $request->input('unknown'),
                 'bukti_scan' => $bukti_scan,
             ]);
 

@@ -19,7 +19,8 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('app:get-thing-speak')->everyMinute();
-
+        // $schedule->command('app:log-harian')->cron('0 7,10,13,16,19 * * *');
+        $schedule->command('app:log-harian')->everyMinute();
     }
 
     /**

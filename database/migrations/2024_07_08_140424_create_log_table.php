@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('scan', function (Blueprint $table) {
-            $table->id('id_scan');
-            $table->unsignedBigInteger('id_harian');
-            $table->dateTime('waktu_scan');
+        Schema::create('log', function (Blueprint $table) {
+            $table->id('id_log');
+            $table->unsignedBigInteger('id_penetasan');
+            $table->dateTime('waktu_log');
             $table->integer('infertil_rendah')->default(0)->nullable();
             $table->integer('infertil_sedang')->default(0)->nullable();
             $table->integer('infertil_tinggi')->default(0)->nullable();
@@ -22,10 +22,10 @@ return new class extends Migration
             $table->integer('fertil_sedang')->default(0)->nullable();
             $table->integer('fertil_tinggi')->default(0)->nullable();
             $table->integer('unknown')->default(0)->nullable();
-            $table->string('bukti_scan', 255)->nullable();
+            $table->string('bukti_log', 255)->nullable();
             $table->timestamps();
 
-            $table->foreign('id_harian')->references('id_harian')->on('harian');
+            $table->foreign('id_penetasan')->references('id_penetasan')->on('penetasan');
         });
     }
 
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('scan');
+        Schema::dropIfExists('log');
     }
 };

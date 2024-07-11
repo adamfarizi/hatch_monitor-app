@@ -5,6 +5,7 @@ use App\Http\Controllers\BerandaController;
 use App\Http\Controllers\CameraController;
 use App\Http\Controllers\HarianController;
 use App\Http\Controllers\KontrolAlatController;
+use App\Http\Controllers\LogController;
 use App\Http\Controllers\PenetasanController;
 use App\Http\Controllers\ProfilController;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +45,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/penetasan/{id_penetasan}/harian/{id_harian}/edit', [HarianController::class, 'index_edit']);
     Route::put('/penetasan/{id_penetasan}/harian/{id_harian}/edit', [HarianController::class, 'edit']);
     Route::delete('/penetasan/{id_penetasan}/harian/{id_harian}/delete', [HarianController::class, 'delete']);
+    Route::get('/penetasan/{id_penetasan}/harian/log', [LogController::class, 'index'])->name('log');
 
     //* Kontrol Alat
     Route::get('/kontrolalat', [KontrolAlatController::class, 'index'])->name('kontrolalat');

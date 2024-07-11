@@ -132,6 +132,19 @@
                         </div>
                     </div>
                     <div class="row mb-3">
+                        <label for="unknown" class="col-sm-2 col-form-label">Unknown <span
+                                class="text-danger">*</span></label>
+                        <div class="col-sm-10">
+                            <div class="input-group mb-3">
+                                <input type="number" class="form-control" aria-describedby="basic-addon2"
+                                    id="unknown" name="unknown" value="{{ $scan->unknown }}" readonly>
+                                <span class="input-group-text" id="basic-addon2">Telur</span>
+                            </div>
+                            <p class="small text-danger mt-2"><i class="ri-information-line"></i> Data unknown tidak
+                                bisa diubah.</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
                         <label for="inputEmail3" class="col-sm-2 col-form-label">Hasil Scan <span
                                 class="text-danger">*</span></label>
                         <div class="col-sm-10">

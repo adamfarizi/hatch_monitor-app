@@ -35,6 +35,11 @@ class Penetasan extends Model
         return $this->hasMany(Harian::class, 'id_penetasan', 'id_penetasan');
     }
 
+    public function log()
+    {
+        return $this->hasMany(Log::class, 'id_penetasan', 'id_penetasan');
+    }
+
     // Relationship with Monitor
     public function monitor()
     {

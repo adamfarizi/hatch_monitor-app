@@ -44,12 +44,15 @@
                             @csrf
                             <div class="row">
                                 {{-- Webcam --}}
-                                {{-- <div id="my_camera" style="display: none;"></div> --}}
+                                <div id="my_camera" style="display: none;"></div>
 
                                 <div class="col-md-6">
                                     <input type="hidden" name="image" class="image-tag">
                                 </div>
                             </div>
+                            <a type="button" class="btn btn-link" href="{{ url('/penetasan/' . $penetasan->id_penetasan . '/harian/log') }}">
+                                <i class="ri ri-history-fill"></i> Log Harian Penetasan
+                            </a>
                             <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-plus-lg me-1"></i> Tambah Kondisi Harian
                             </button>
@@ -213,6 +216,23 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
+                                                        <td colspan="3">
+                                                            <div class="row mb-0">
+                                                                <div class="col mb-0">
+                                                                    <ul>
+                                                                        <li class="mb-1"><span class="badge rounded-pill bg-warning">Unknown</span>
+                                                                            <ul style="padding-left: 1rem">
+                                                                                <li>Unknown :
+                                                                                    {{ $scan->unknown }} telur
+                                                                                </li>
+                                                                            </ul>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
                                                         <td>
                                                             <a class="" href="#" data-bs-toggle="modal"
                                                                 data-bs-target="#buktiScan{{ $harian->id_harian }}">
@@ -356,7 +376,7 @@
     </script>
 
     {{-- Webcam --}}
-    {{-- <script language="JavaScript">
+    <script language="JavaScript">
         Webcam.set({
             width: 450,
             height: 280,
@@ -382,10 +402,10 @@
                 document.getElementById('my_camera').style.display = 'none';
             });
         }
-    </script> --}}
+    </script>
 
     {{-- ESP Cam --}}
-    <script>
+    {{-- <script>
         document.addEventListener('DOMContentLoaded', function() {
             capturePhoto();
         });
@@ -424,5 +444,5 @@
             imageResult.innerHTML = '<img src="' + dataUri +
                 '" style="width: 100%; height: 100%; object-fit: cover;">';
         }
-    </script>
+    </script> --}}
 @endsection

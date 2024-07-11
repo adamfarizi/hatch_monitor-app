@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Scan extends Model
+class Log extends Model
 {
     use HasFactory;
-    protected $table = 'scan';
-    protected $primaryKey = 'id_scan';
+    protected $table = 'log';
+    protected $primaryKey = 'id_log';
     public $timestamps = true;
     protected $fillable = [
-        'id_harian', 
-        'waktu_scan', 
+        'id_penetasan', 
+        'waktu_log', 
         'infertil_rendah',
         'infertil_sedang',
         'infertil_tinggi',
@@ -21,13 +21,12 @@ class Scan extends Model
         'fertil_sedang',
         'fertil_tinggi',
         'unknown',
-        'bukti_scan',
+        'bukti_log',
     ];
 
     // Relationship with Harian
-    public function harian()
+    public function penetasan()
     {
-        return $this->belongsTo(Harian::class, 'id_harian', 'id_harian');
+        return $this->belongsTo(Penetasan::class, 'id_penetasan', 'id_penetasan');
     }
-
 }
