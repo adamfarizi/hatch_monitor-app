@@ -44,7 +44,7 @@
                             @csrf
                             <div class="row">
                                 {{-- Webcam --}}
-                                <div id="my_camera" style="display: none;"></div>
+                                {{-- <div id="my_camera" style="display: none;"></div> --}}
 
                                 <div class="col-md-6">
                                     <input type="hidden" name="image" class="image-tag">
@@ -376,7 +376,7 @@
     </script>
 
     {{-- Webcam --}}
-    <script language="JavaScript">
+    {{-- <script language="JavaScript">
         Webcam.set({
             width: 450,
             height: 280,
@@ -402,10 +402,10 @@
                 document.getElementById('my_camera').style.display = 'none';
             });
         }
-    </script>
+    </script> --}}
 
     {{-- ESP Cam --}}
-    {{-- <script>
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
             capturePhoto();
         });
@@ -444,5 +444,5 @@
             imageResult.innerHTML = '<img src="' + dataUri +
                 '" style="width: 100%; height: 100%; object-fit: cover;">';
         }
-    </script> --}}
+    </script>
 @endsection
