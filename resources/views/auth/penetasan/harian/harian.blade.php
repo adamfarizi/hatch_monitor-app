@@ -419,7 +419,7 @@
                     setTimeout(() => {
                         const imageUrl = `${link}/saved-photo`;
                         fetchImageAsDataUri(imageUrl);
-                    }, 5000); // wait 5 seconds for the photo to be saved
+                    }, 10000); // wait 5 seconds for the photo to be saved
                 })
                 .catch(error => console.error('Error:', error));
         }
