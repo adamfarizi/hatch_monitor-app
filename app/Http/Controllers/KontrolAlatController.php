@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\LiveEvent;
+use App\Models\Live;
 use App\Models\Master;
 use App\Models\Monitor;
 use Illuminate\Http\Request;
@@ -86,6 +88,28 @@ class KontrolAlatController extends Controller
             'relay1' => $relay1,
             'relay2' => $relay2,
         ], $data);
+    }
+
+    public function live(Request $request)
+    {
+        if ($request->ajax()) {
+            $filterBulan = $request->filterBulan;
+
+            $data = Live::where('waktu', 'like', $filterBulan . '%')
+                ->orderByDesc('waktu')
+                ->get();
+            return DataTables::of($data)
+                ->make(true);
+        }
+    }
+
+    public function liveBroadcast(Request $request)
+    {
+        $data = $request->all();
+
+        broadcast(new LiveEvent($data));
+
+        return response()->json(['message' => 'Broadcast successful']);
     }
 
     public function grafik(Request $request)

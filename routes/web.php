@@ -49,6 +49,7 @@ Route::middleware(['auth'])->group(function () {
 
     //* Kontrol Alat
     Route::get('/kontrolalat', [KontrolAlatController::class, 'index'])->name('kontrolalat');
+    Route::get('/kontrolalat/live', [KontrolAlatController::class, 'live'])->name('kontrolalat.live');
     Route::get('/kontrolalat/grafik', [KontrolAlatController::class, 'grafik'])->name('kontrolalat.grafik');
     Route::post('/kontrolRelay', [KontrolAlatController::class, 'kontrolRelay']);
     Route::post('/linkESPCAM', [KontrolAlatController::class, 'linkESPCAM']);

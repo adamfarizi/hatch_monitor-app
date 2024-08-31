@@ -123,8 +123,16 @@
                         <div class="container mb-4" style="height: 50vh">
                             <div class="bg-dark h-100 text-center text-white live-preview-container"
                                 style="border-radius: 25px;">
-                                <img id="livePreviewImage" src="{{ $link2 }}" width="100%" height="100%"
-                                    scrolling="no" style="border: none; border-radius: 25px; object-fit: cover;">
+
+                                {{-- Deteksi Webcam --}}
+                                <img id="livePreviewImage" src="http://localhost:5000/video_feed" width="100%"
+                                    height="100%" scrolling="no"
+                                    style="border: none; border-radius: 25px; object-fit: cover;" />
+
+                                {{-- Live --}}
+                                {{-- <img id="livePreviewImage" src="{{ $link2 }}" width="100%" height="100%"
+                                    scrolling="no" style="border: none; border-radius: 25px; object-fit: cover;"> --}}
+
                                 <button id="fullscreenButton" class="btn btn-lg text-white p-0" onclick="openFullscreen()"
                                     style="position: absolute; top: 35%; left: 91%; transform: translate(-50%, -50%); font-size: 30px;">
                                     <i class="ri-fullscreen-fill"></i>
@@ -293,6 +301,30 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="card">
+                    <div class="card-body pb-0">
+                        <h5 class="card-title">Data Deteksi Live</h5>
+                        <div class=" datatable-loading searchable fixed-columns p-3">
+                            <table id="tableLive" class="table" role="grid" style="min-height: 200px;">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Tanggal</th>
+                                        <th>Jam</th>
+                                        <th>Class</th>
+                                        <th>Akurasi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>        
         {{-- Grafik --}}
         <div class="row">
             <div class="col-lg-6 col-md-12">
@@ -390,7 +422,7 @@
     </script>
 
     {{-- EspCam --}}
-    <script>
+    {{-- <script>
         // Fungsi untuk memeriksa apakah gambar di URL tertentu dapat diakses
         function checkImage(url, callback) {
             var img = new Image();
@@ -415,6 +447,47 @@
             if (isAccessible) {
                 // Jika gambar diakses, tampilkan gambar
                 livePreviewContainer.style.background = 'none'; // Hapus latar belakang hitam
+                livePreviewImage.style.display = 'block'; // Tampilkan gambar
+                connectionStatus.style.display = 'none'; // Sembunyikan pesan kamera tidak tersambung
+                fullscreenButton.style.display = 'block';
+            } else {
+                // Jika gambar tidak dapat diakses, tampilkan latar belakang hitam dan pesan kamera tidak tersambung
+                livePreviewContainer.style.background = '#000'; // Latar belakang hitam
+                livePreviewImage.style.display = 'none'; // Sembunyikan gambar
+                connectionStatus.style.display = 'block'; // Tampilkan pesan kamera tidak tersambung
+                fullscreenButton.style.display = 'none';
+            }
+        });
+    </script> --}}
+
+    {{-- Deteksi Webcam --}}
+    <script>
+        // Fungsi untuk memeriksa apakah gambar di URL tertentu dapat diakses
+        function checkImage(url, callback) {
+            var img = new Image();
+            img.onload = function() {
+                callback(true);
+            };
+            img.onerror = function() {
+                callback(false);
+            };
+            img.src = url;
+        }
+
+        // URL gambar yang ingin diperiksa
+        var link = 'http://localhost:5000/video_feed';
+
+        // Periksa apakah gambar di URL dapat diakses
+        checkImage(link, function(isAccessible) {
+            var livePreviewContainer = document.querySelector('.live-preview-container');
+            var livePreviewImage = document.getElementById('livePreviewImage');
+            var connectionStatus = document.getElementById('connectionStatus');
+            var fullscreenButton = document.getElementById('fullscreenButton');
+
+            if (isAccessible) {
+                // Jika gambar diakses, tampilkan gambar
+                livePreviewContainer.style.background = 'none'; // Hapus latar belakang hitam
+                livePreviewImage.src = link; // Atur sumber gambar ke URL yang valid
                 livePreviewImage.style.display = 'block'; // Tampilkan gambar
                 connectionStatus.style.display = 'none'; // Sembunyikan pesan kamera tidak tersambung
                 fullscreenButton.style.display = 'block';
@@ -608,7 +681,107 @@
         });
     </script>
 
-    {{-- Datatables --}}
+    {{-- Datatables Live --}}
+    <script>
+        $(document).ready(function() {
+            var tableLive = $('#tableLive').DataTable({
+                processing: false,
+                serverSide: true,
+                responsive: true,
+                ajax: {
+                    url: "{{ route('kontrolalat.live') }}",
+                    data: function(d) {
+
+                    }
+                },
+                columns: [{
+                        data: null,
+                        searchable: false,
+                        orderable: false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    {
+                        data: 'waktu',
+                        searchable: false,
+                        render: function(data, type, full, meta) {
+                            var waktu = moment(full.waktu);
+                            var formattedDate = waktu.format('dddd, D MMMM YYYY');
+                            return formattedDate;
+                        }
+                    },
+                    {
+                        data: 'waktu',
+                        searchable: false,
+                        render: function(data, type, full, meta) {
+                            var waktu = moment(full.waktu);
+                            var formattedTime = waktu.format('HH:mm');
+                            return formattedTime;
+                        }
+                    },
+                    {
+                        data: 'class',
+                        searchable: false,
+                        render: function(data, type, full, meta) {
+                            if (data === 'infertil') {
+                                return '<span class="badge bg-danger">Infertil</span>';
+                            } else if (data === 'fertil') {
+                                return '<span class="badge bg-primary">Fertil</span>';
+                            } else {
+                                return '<span class="badge bg-warning">Unknown</span>'; // For any other class
+                            }
+                        }
+                    },
+                    {
+                        data: 'akurasi',
+                        searchable: false,
+                        render: function(data, type, full, meta) {
+                            var badgeClass = 'border-danger'; // Default badge color
+                            var badgeClass2 = 'text-danger'; 
+                            var label = 'Rendah'; // Default label
+
+                            if (data >= 0.75) {
+                                badgeClass = 'border-success'; // High accuracy
+                                badgeClass2 = 'text-success';
+                                label = 'Tinggi'; // High accuracy label
+                            } else if (data >= 0.50) {
+                                badgeClass = 'border-warning'; // Medium accuracy
+                                badgeClass2 = 'text-warning';
+                                label = 'Sedang'; // Medium accuracy label
+                            } else {
+                                badgeClass = 'border-danger'; // Low accuracy
+                                badgeClass2 = 'text-danger';
+                                label = 'Rendah'; // Low accuracy label
+                            }
+
+                            // Kembalikan badge dengan warna dan label sesuai akurasi
+                            return '<span class="badge ' + badgeClass + ' border-1 ' + badgeClass2 + '">' + label + ' (' + data + ')</span>';
+                        }
+                    }
+                ],
+                lengthMenu: [
+                    [5, 10, 25, 50, 100, -1], // Jumlah entries per halaman, -1 untuk Tampilkan Semua Data
+                    ['5', '10', '25', '50', '100', 'Semua']
+                ],
+                searching: false
+            });
+
+            // Menambahkan event listener untuk event dari Pusher
+            var channelLive = pusher.subscribe('live-channel');
+            channelLive.bind('live-event', function(data) {
+                // Menambahkan data baru ke dalam DataTables
+                var data = {
+                    waktu: data.waktu,
+                    class: data.class,
+                    akurasi: data.akurasi
+                };
+                tableLive.row.add(data).draw();                
+            });
+        });
+    </script>
+
+    {{-- Datatables Suhu --}}
     <script>
         $(document).ready(function() {
             var table = $('#tableSuhuKelembaban').DataTable({
@@ -692,4 +865,32 @@
             });
         });
     </script>
+
+    {{-- Accordion --}}
+    {{-- <script>
+        // Function to save accordion state
+        function saveAccordionState() {
+            const isOpen = document.getElementById("flush-collapseOne").classList.contains("show");
+            localStorage.setItem("accordionState", isOpen ? "open" : "closed");
+        }
+        
+        // Function to restore accordion state on page load
+        function restoreAccordionState() {
+            const savedState = localStorage.getItem("accordionState");
+            const collapseElement = document.getElementById("flush-collapseOne");
+        
+            if (savedState === "open") {
+                collapseElement.classList.add("show");
+            } else {
+                collapseElement.classList.remove("show");
+            }
+        }
+        
+        // Listen for accordion toggle events
+        document.getElementById("flush-collapseOne").addEventListener("shown.bs.collapse", saveAccordionState);
+        document.getElementById("flush-collapseOne").addEventListener("hidden.bs.collapse", saveAccordionState);
+        
+        // Restore the state when the page loads
+        document.addEventListener("DOMContentLoaded", restoreAccordionState);
+    </script> --}}
 @endsection

@@ -48,3 +48,8 @@ setuptools>=65.5.1 # Snyk vulnerability fix
 # albumentations>=1.0.3
 # pycocotools>=2.0.6  # COCO mAP
 wheel>=0.38.0 # not directly required, pinned by Snyk to avoid a vulnerability
+
+# Additional Dependencies
+flask
+mysql-connector-python
+python-dotenv
