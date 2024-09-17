@@ -155,6 +155,10 @@ def process_frame(frame):
                         color = infertil_color
                     else:
                         color = (0, 255, 0)  # Default color for unknown classes
+                        
+                    # Insert detected class and accuracy into database
+                    insert_to_db(names[int(cls)], float(conf))
+                        
                     frame = cv2.rectangle(frame, (int(xyxy[0]), int(xyxy[1])), (int(xyxy[2]), int(xyxy[3])), color, 2)
                     frame = cv2.putText(frame, label, (int(xyxy[0]), int(xyxy[1])-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
